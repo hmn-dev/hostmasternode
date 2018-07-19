@@ -1,0 +1,2 @@
+# hostmasternode
+HMN Coin
