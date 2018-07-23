@@ -76,11 +76,7 @@ In the VirtualBox GUI click "New" and choose the following parameters in the wiz
 
 After creating the VM, we need to configure it.
 
-- Click the `Settings` button, then go to `System` tab and `Processor` sub-tab. Increase the number of processors to the number of cores on your machine if you want builds to be faster.
-
-![](gitian-building/system_settings.png)
-
-- Go to the `Network` tab. Adapter 1 should be attached to `NAT`.
+- Click the `Settings` button, then go to the `Network` tab. Adapter 1 should be attached to `NAT`.
 
 ![](gitian-building/network_settings.png)
 
@@ -135,7 +131,6 @@ To select a different button, press `Tab`.
   - Leave domain name empty.
 
 ![](gitian-building/debian_install_5_configure_the_network.png)
-![](gitian-building/debian_install_6_domain_name.png)
 
 - Choose a root password and enter it twice (remember it for later)
 
@@ -274,8 +269,8 @@ echo "%sudo ALL=NOPASSWD: /usr/bin/lxc-start" > /etc/sudoers.d/gitian-lxc
 echo "%sudo ALL=NOPASSWD: /usr/bin/lxc-execute" >> /etc/sudoers.d/gitian-lxc
 # make /etc/rc.local script that sets up bridge between guest and host
 echo '#!/bin/sh -e' > /etc/rc.local
-echo 'brctl addbr br0' >> /etc/rc.local
-echo 'ifconfig br0 10.0.3.2/24 up' >> /etc/rc.local
+echo 'brctl addbr lxcbr0' >> /etc/rc.local
+echo 'ifconfig lxcbr0 10.0.3.2/24 up' >> /etc/rc.local
 echo 'iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE' >> /etc/rc.local
 echo 'echo 1 > /proc/sys/net/ipv4/ip_forward' >> /etc/rc.local
 echo 'exit 0' >> /etc/rc.local
@@ -310,12 +305,12 @@ cd ..
 
 **Note**: When sudo asks for a password, enter the password for the user *debian* not for *root*.
 
-Clone the git repositories for hostmasternode and Gitian.
+Clone the git repositories for Hostmasternode Core and Gitian.
 
 ```bash
 git clone https://github.com/devrandom/gitian-builder.git
-git clone https://github.com/hostmasternodeproject/hostmasternode
-git clone https://github.com/hostmasternodeproject/gitian.sigs.ltc.git
+git clone https://github.com/hostmasternodepay/hostmasternode
+git clone https://github.com/hostmasternodepay/gitian.sigs.git
 ```
 
 Setting up the Gitian image
@@ -338,13 +333,21 @@ There will be a lot of warnings printed during the build of the image. These can
 
 **Note**: When sudo asks for a password, enter the password for the user *debian* not for *root*.
 
+**Note**: Repeat this step when you have upgraded to a newer version of Gitian.
+
+**Note**: if you get the error message *"bin/make-base-vm: mkfs.ext4: not found"* during this process you have to make the following change in file *"gitian-builder/bin/make-base-vm"* at line 117:
+```bash
+# mkfs.ext4 -F $OUT-lxc
+/sbin/mkfs.ext4 -F $OUT-lxc # (some Gitian environents do NOT find mkfs.ext4. Some do...)
+```
+
 Getting and building the inputs
 --------------------------------
 
-At this point you have two options, you can either use the automated script (found in [contrib/gitian-build.sh](/contrib/gitian-build.sh)) or you could manually do everything by following this guide. If you're using the automated script, then run it with the "--setup" command. Afterwards, run it with the "--build" command (example: "contrib/gitian-build.sh -b signer 0.13.0"). Otherwise ignore this.
+At this point you have two options, you can either use the automated script (found in [contrib/gitian-build.sh](/contrib/gitian-build.sh)) or you could manually do everything by following this guide. If you're using the automated script, then run it with the "--setup" command. Afterwards, run it with the "--build" command (example: "contrib/gitian-building.sh -b signer 0.13.0"). Otherwise ignore this.
 
 Follow the instructions in [doc/release-process.md](release-process.md#fetch-and-create-inputs-first-time-or-when-dependency-versions-change)
-in the hostmasternode repository under 'Fetch and create inputs' to install sources which require
+in the Hostmasternode Core repository under 'Fetch and create inputs' to install sources which require
 manual intervention. Also optionally follow the next step: 'Seed the Gitian sources cache
 and offline git repositories' which will fetch the remaining files required for building
 offline.
@@ -353,7 +356,7 @@ Building Hostmasternode Core
 ----------------
 
 To build Hostmasternode Core (for Linux, OS X and Windows) just follow the steps under 'perform
-Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the hostmasternode repository.
+Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the Hostmasternode Core repository.
 
 This may take some time as it will build all the dependencies needed for each descriptor.
 These dependencies will be cached after a successful build to avoid rebuilding them when possible.
@@ -367,12 +370,13 @@ tail -f var/build.log
 
 Output from `gbuild` will look something like
 
+```bash
     Initialized empty Git repository in /home/debian/gitian-builder/inputs/hostmasternode/.git/
     remote: Counting objects: 57959, done.
     remote: Total 57959 (delta 0), reused 0 (delta 0), pack-reused 57958
     Receiving objects: 100% (57959/57959), 53.76 MiB | 484.00 KiB/s, done.
     Resolving deltas: 100% (41590/41590), done.
-    From https://github.com/hostmasternodeproject/hostmasternode
+    From https://github.com/hostmasternodepay/hostmasternode
     ... (new tags, new branch etc)
     --- Building for trusty amd64 ---
     Stopping target if it is up
@@ -388,7 +392,7 @@ Output from `gbuild` will look something like
     Creating build script (var/build-script)
     lxc-start: Connection refused - inotify event with no name (mask 32768)
     Running build script (log in var/build.log)
-
+```
 Building an alternative repository
 -----------------------------------
 
@@ -398,8 +402,8 @@ and inputs.
 
 For example:
 ```bash
-URL=https://github.com/thrasher-/hostmasternode.git
-COMMIT=2014_03_windows_unicode_path
+URL=https://github.com/crowning-/hostmasternode.git
+COMMIT=b616fb8ef0d49a919b72b0388b091aaec5849b96
 ./bin/gbuild --commit hostmasternode=${COMMIT} --url hostmasternode=${URL} ../hostmasternode/contrib/gitian-descriptors/gitian-linux.yml
 ./bin/gbuild --commit hostmasternode=${COMMIT} --url hostmasternode=${URL} ../hostmasternode/contrib/gitian-descriptors/gitian-win.yml
 ./bin/gbuild --commit hostmasternode=${COMMIT} --url hostmasternode=${URL} ../hostmasternode/contrib/gitian-descriptors/gitian-osx.yml
@@ -448,7 +452,7 @@ Then when building, override the remote URLs that gbuild would otherwise pull fr
 ```bash
 
 cd /some/root/path/
-git clone https://github.com/hostmasternodeproject/hostmasternode-detached-sigs.git
+git clone https://github.com/hostmasternodepay/hostmasternode-detached-sigs.git
 
 BTCPATH=/some/root/path/hostmasternode
 SIGPATH=/some/root/path/hostmasternode-detached-sigs
@@ -462,7 +466,7 @@ Signing externally
 If you want to do the PGP signing on another device, that's also possible; just define `SIGNER` as mentioned
 and follow the steps in the build process as normal.
 
-    gpg: skipped "laanwj": secret key not available
+    gpg: skipped "crowning-": secret key not available
 
 When you execute `gsign` you will get an error from GPG, which can be ignored. Copy the resulting `.assert` files
 in `gitian.sigs` to your signing machine and do
@@ -476,9 +480,10 @@ in `gitian.sigs` to your signing machine and do
 This will create the `.sig` files that can be committed together with the `.assert` files to assert your
 Gitian build.
 
-Uploading signatures
+Uploading signatures (not yet implemented)
 ---------------------
 
-After building and signing you can push your signatures (both the `.assert` and `.assert.sig` files) to the
-[hostmasternodeproject/gitian.sigs.ltc](https://github.com/hostmasternodeproject/gitian.sigs.ltc/) repository, or if that's not possible create a pull
-request. You can also mail the files to thrasher (thrasher@addictionsofware.com) and he will commit them.
+In the future it will be possible to push your signatures (both the `.assert` and `.assert.sig` files) to the
+[hostmasternode/gitian.sigs](https://github.com/hostmasternodepay/gitian.sigs/) repository, or if that's not possible to create a pull
+request.
+There will be an official announcement when this repository is online.

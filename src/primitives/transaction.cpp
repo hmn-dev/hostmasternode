@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +11,12 @@
 
 std::string COutPoint::ToString() const
 {
-    return strprintf("COutPoint(%s, %u)", hash.ToString().substr(0,10), n);
+    return strprintf("COutPoint(%s, %u)", hash.ToString()/*.substr(0,10)*/, n);
+}
+
+std::string COutPoint::ToStringShort() const
+{
+    return strprintf("%s-%u", hash.ToString().substr(0,64), n);
 }
 
 CTxIn::CTxIn(COutPoint prevoutIn, CScript scriptSigIn, uint32_t nSequenceIn)
@@ -47,6 +52,7 @@ CTxOut::CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn)
 {
     nValue = nValueIn;
     scriptPubKey = scriptPubKeyIn;
+    nRounds = -10;
 }
 
 std::string CTxOut::ToString() const
@@ -59,20 +65,28 @@ CMutableTransaction::CMutableTransaction(const CTransaction& tx) : nVersion(tx.n
 
 uint256 CMutableTransaction::GetHash() const
 {
-    return SerializeHash(*this, SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
+    return SerializeHash(*this);
+}
+
+std::string CMutableTransaction::ToString() const
+{
+    std::string str;
+    str += strprintf("CMutableTransaction(hash=%s, ver=%d, vin.size=%u, vout.size=%u, nLockTime=%u)\n",
+        GetHash().ToString().substr(0,10),
+        nVersion,
+        vin.size(),
+        vout.size(),
+        nLockTime);
+    for (unsigned int i = 0; i < vin.size(); i++)
+        str += "    " + vin[i].ToString() + "\n";
+    for (unsigned int i = 0; i < vout.size(); i++)
+        str += "    " + vout[i].ToString() + "\n";
+    return str;
 }
 
 uint256 CTransaction::ComputeHash() const
 {
-    return SerializeHash(*this, SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
-}
-
-uint256 CTransaction::GetWitnessHash() const
-{
-    if (!HasWitness()) {
-        return GetHash();
-    }
-    return SerializeHash(*this, SER_GETHASH, 0);
+    return SerializeHash(*this);
 }
 
 /* For backward compatibility, the hash is initialized to 0. TODO: remove the need for this default constructor entirely. */
@@ -83,12 +97,39 @@ CTransaction::CTransaction(CMutableTransaction &&tx) : nVersion(tx.nVersion), vi
 CAmount CTransaction::GetValueOut() const
 {
     CAmount nValueOut = 0;
-    for (const auto& tx_out : vout) {
-        nValueOut += tx_out.nValue;
-        if (!MoneyRange(tx_out.nValue) || !MoneyRange(nValueOut))
+    for (std::vector<CTxOut>::const_iterator it(vout.begin()); it != vout.end(); ++it)
+    {
+        nValueOut += it->nValue;
+        if (!MoneyRange(it->nValue) || !MoneyRange(nValueOut))
             throw std::runtime_error(std::string(__func__) + ": value out of range");
     }
     return nValueOut;
+}
+
+double CTransaction::ComputePriority(double dPriorityInputs, unsigned int nTxSize) const
+{
+    nTxSize = CalculateModifiedSize(nTxSize);
+    if (nTxSize == 0) return 0.0;
+
+    return dPriorityInputs / nTxSize;
+}
+
+unsigned int CTransaction::CalculateModifiedSize(unsigned int nTxSize) const
+{
+    // In order to avoid disincentivizing cleaning up the UTXO set we don't count
+    // the constant overhead for each txin and up to 110 bytes of scriptSig (which
+    // is enough to cover a compressed pubkey p2sh redemption) for priority.
+    // Providing any more cleanup incentive than making additional inputs free would
+    // risk encouraging people to create junk outputs to redeem later.
+    if (nTxSize == 0)
+        nTxSize = ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION);
+    for (std::vector<CTxIn>::const_iterator it(vin.begin()); it != vin.end(); ++it)
+    {
+        unsigned int offset = 41U + std::min(110U, (unsigned int)it->scriptSig.size());
+        if (nTxSize > offset)
+            nTxSize -= offset;
+    }
+    return nTxSize;
 }
 
 unsigned int CTransaction::GetTotalSize() const
@@ -105,11 +146,9 @@ std::string CTransaction::ToString() const
         vin.size(),
         vout.size(),
         nLockTime);
-    for (const auto& tx_in : vin)
-        str += "    " + tx_in.ToString() + "\n";
-    for (const auto& tx_in : vin)
-        str += "    " + tx_in.scriptWitness.ToString() + "\n";
-    for (const auto& tx_out : vout)
-        str += "    " + tx_out.ToString() + "\n";
+    for (unsigned int i = 0; i < vin.size(); i++)
+        str += "    " + vin[i].ToString() + "\n";
+    for (unsigned int i = 0; i < vout.size(); i++)
+        str += "    " + vout[i].ToString() + "\n";
     return str;
 }

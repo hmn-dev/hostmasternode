@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -40,11 +40,19 @@ public:
         ProxyPortTor,           // int
         DisplayUnit,            // BitcoinUnits::Unit
         ThirdPartyTxUrls,       // QString
+        Digits,                 // QString
+        Theme,                  // QString
         Language,               // QString
         CoinControlFeatures,    // bool
         ThreadsScriptVerif,     // int
         DatabaseCache,          // int
         SpendZeroConfChange,    // bool
+        ShowMasternodesTab,     // bool
+        ShowAdvancedPSUI,       // bool
+        LowKeysWarning,         // bool
+        PrivateSendRounds,      // int
+        PrivateSendAmount,      // int
+        PrivateSendMultiSession,// bool
         Listen,                 // bool
         OptionIDRowCount,
     };
@@ -66,11 +74,13 @@ public:
     QString getThirdPartyTxUrls() { return strThirdPartyTxUrls; }
     bool getProxySettings(QNetworkProxy& proxy) const;
     bool getCoinControlFeatures() { return fCoinControlFeatures; }
+    bool getShowAdvancedPSUI() { return fShowAdvancedPSUI; }
     const QString& getOverriddenByCommandLine() { return strOverriddenByCommandLine; }
 
     /* Restart flag helper */
     void setRestartRequired(bool fRequired);
     bool isRestartRequired();
+    bool resetSettings;
 
 private:
     /* Qt-only settings */
@@ -81,6 +91,7 @@ private:
     int nDisplayUnit;
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
+    bool fShowAdvancedPSUI;
     /* settings that were overridden by command-line */
     QString strOverriddenByCommandLine;
 
@@ -91,6 +102,9 @@ private:
     void checkAndMigrate();
 Q_SIGNALS:
     void displayUnitChanged(int unit);
+    void privateSendRoundsChanged();
+    void privateSentAmountChanged();
+    void advancedPSUIChanged(bool);
     void coinControlFeaturesChanged(bool);
     void hideTrayIconChanged(bool);
 };

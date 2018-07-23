@@ -1,4 +1,5 @@
 # Copyright (c) 2015-2016 The Bitcoin Core developers
+# Copyright (c) 2014-2018 The Hostmasternode Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,11 +8,11 @@ BENCH_SRCDIR = bench
 BENCH_BINARY = bench/bench_hostmasternode$(EXEEXT)
 
 RAW_TEST_FILES = \
-  bench/data/block413567.raw
+  bench/data/block813851.raw
 GENERATED_TEST_FILES = $(RAW_TEST_FILES:.raw=.raw.h)
 
 bench_bench_hostmasternode_SOURCES = \
-  bench/bench_bitcoin.cpp \
+  bench/bench_hostmasternode.cpp \
   bench/bench.cpp \
   bench/bench.h \
   bench/checkblock.cpp \
@@ -21,12 +22,11 @@ bench_bench_hostmasternode_SOURCES = \
   bench/crypto_hash.cpp \
   bench/ccoins_caching.cpp \
   bench/mempool_eviction.cpp \
-  bench/verify_script.cpp \
   bench/base58.cpp \
   bench/lockedpool.cpp \
   bench/perf.cpp \
   bench/perf.h \
-  bench/prevector_destructor.cpp
+  bench/string_cast.cpp
 
 nodist_bench_bench_hostmasternode_SOURCES = $(GENERATED_TEST_FILES)
 
@@ -39,7 +39,6 @@ bench_bench_hostmasternode_LDADD = \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBLEVELDB) \
-  $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
   $(LIBSECP256K1) \
   $(LIBUNIVALUE)
@@ -60,7 +59,7 @@ CLEAN_BITCOIN_BENCH = bench/*.gcda bench/*.gcno $(GENERATED_TEST_FILES)
 
 CLEANFILES += $(CLEAN_BITCOIN_BENCH)
 
-bench/checkblock.cpp: bench/data/block413567.raw.h
+bench/checkblock.cpp: bench/data/block813851.raw.h
 
 bitcoin_bench: $(BENCH_BINARY)
 
@@ -68,13 +67,14 @@ bench: $(BENCH_BINARY) FORCE
 	$(BENCH_BINARY)
 
 bitcoin_bench_clean : FORCE
-	rm -f $(CLEAN_BITCOIN_BENCH) $(bench_bench_bitcoin_OBJECTS) $(BENCH_BINARY)
+	rm -f $(CLEAN_BITCOIN_BENCH) $(bench_bench_hostmasternode_OBJECTS) $(BENCH_BINARY)
 
-%.raw.h: %.raw
+bench/data/%.raw.h: bench/data/%.raw
 	@$(MKDIR_P) $(@D)
 	@{ \
+	 echo "namespace raw_bench{" && \
 	 echo "static unsigned const char $(*F)[] = {" && \
 	 $(HEXDUMP) -v -e '8/1 "0x%02x, "' -e '"\n"' $< | $(SED) -e 's/0x  ,//g' && \
-	 echo "};"; \
+	 echo "};};"; \
 	} > "$@.new" && mv -f "$@.new" "$@"
 	@echo "Generated $@"

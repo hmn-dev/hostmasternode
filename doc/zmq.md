@@ -45,7 +45,7 @@ operation.
 
 By default, the ZeroMQ feature is automatically compiled in if the
 necessary prerequisites are found.  To disable, use --disable-zmq
-during the *configure* step of building hostmasternoded:
+during the *configure* step of building bitcoind:
 
     $ ./configure --disable-zmq (other options)
 
@@ -57,16 +57,18 @@ the command line or in the configuration file.
 Currently, the following notifications are supported:
 
     -zmqpubhashtx=address
+    -zmqpubhashtxlock=address
     -zmqpubhashblock=address
     -zmqpubrawblock=address
     -zmqpubrawtx=address
+    -zmqpubrawtxlock=address
 
 The socket type is PUB and the address must be a valid ZeroMQ socket
 address. The same address can be used in more than one notification.
 
 For instance:
 
-    $ hostmasternoded -zmqpubhashtx=tcp://127.0.0.1:29402 \
+    $ hostmasternoded -zmqpubhashtx=tcp://127.0.0.1:28332 \
                -zmqpubrawtx=ipc:///tmp/hostmasternoded.tx.raw
 
 Each PUB notification has a topic and body, where the header

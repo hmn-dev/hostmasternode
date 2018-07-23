@@ -5,13 +5,12 @@
 #ifndef BITCOIN_CHAINPARAMSBASE_H
 #define BITCOIN_CHAINPARAMSBASE_H
 
-#include <memory>
 #include <string>
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between bitcoin-cli and bitcoind)
- * of a given instance of the Bitcoin system.
+ * CBaseChainParams defines the base parameters (shared between hostmasternode-cli and hostmasternoded)
+ * of a given instance of the Hostmasternode system.
  */
 class CBaseChainParams
 {
@@ -19,6 +18,7 @@ public:
     /** BIP70 chain name strings (main, test or regtest) */
     static const std::string MAIN;
     static const std::string TESTNET;
+    static const std::string DEVNET;
     static const std::string REGTEST;
 
     const std::string& DataDir() const { return strDataDir; }
@@ -32,13 +32,6 @@ protected:
 };
 
 /**
- * Creates and returns a std::unique_ptr<CBaseChainParams> of the chosen chain.
- * @returns a CBaseChainParams* of the chosen chain.
- * @throws a std::runtime_error if the chain is not supported.
- */
-std::unique_ptr<CBaseChainParams> CreateBaseChainParams(const std::string& chain);
-
-/**
  * Append the help messages for the chainparams options to the
  * parameter string.
  */
@@ -50,6 +43,8 @@ void AppendParamsHelpMessages(std::string& strUsage, bool debugHelp=true);
  */
 const CBaseChainParams& BaseParams();
 
+CBaseChainParams& BaseParams(const std::string& chain);
+
 /** Sets the params returned by Params() to those for the given network. */
 void SelectBaseParams(const std::string& chain);
 
@@ -58,5 +53,13 @@ void SelectBaseParams(const std::string& chain);
  * @return CBaseChainParams::MAX_NETWORK_TYPES if an invalid combination is given. CBaseChainParams::MAIN by default.
  */
 std::string ChainNameFromCommandLine();
+
+std::string GetDevNetName();
+
+/**
+ * Return true if SelectBaseParamsFromCommandLine() has been called to select
+ * a network.
+ */
+bool AreBaseParamsConfigured();
 
 #endif // BITCOIN_CHAINPARAMSBASE_H

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2014-2015 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 '''
@@ -26,7 +26,7 @@ def content_hash(filename):
 
 pngcrush = 'pngcrush'
 git = 'git'
-folders = ["src/qt/res/movies", "src/qt/res/icons", "share/pixmaps"]
+folders = ["src/qt/res/movies", "src/qt/res/icons", "src/qt/res/icons/crownium", "src/qt/res/icons/drkblue", "src/qt/res/icons/light", "src/qt/res/icons/light-retro", "src/qt/res/icons/trad", "src/qt/res/images", "src/qt/res/images/crownium", "src/qt/res/images/drkblue", "src/qt/res/images/light", "src/qt/res/images/light-retro", "src/qt/res/images/trad", "share/pixmaps"]
 basePath = subprocess.check_output([git, 'rev-parse', '--show-toplevel']).rstrip('\n')
 totalSaveBytes = 0
 noHashChange = True

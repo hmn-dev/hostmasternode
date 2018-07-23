@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,7 +6,6 @@
 #define BITCOIN_QT_GUIUTIL_H
 
 #include "amount.h"
-#include "fs.h"
 
 #include <QEvent>
 #include <QHeaderView>
@@ -16,6 +15,8 @@
 #include <QString>
 #include <QTableView>
 #include <QLabel>
+
+#include <boost/filesystem.hpp>
 
 class QValidatedLineEdit;
 class SendCoinsRecipient;
@@ -29,7 +30,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the Bitcoin Qt UI.
+/** Utility functions used by the Hostmasternode Qt UI.
  */
 namespace GUIUtil
 {
@@ -44,7 +45,7 @@ namespace GUIUtil
     void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent);
     void setupAmountWidget(QLineEdit *widget, QWidget *parent);
 
-    // Parse "bitcoin:" URI into recipient object, return true on successful parsing
+    // Parse "hostmasternode:" URI into recipient object, return true on successful parsing
     bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out);
     bool parseBitcoinURI(QString uri, SendCoinsRecipient *out);
     QString formatBitcoinURI(const SendCoinsRecipient &info);
@@ -112,9 +113,12 @@ namespace GUIUtil
 
     // Open debug.log
     void openDebugLogfile();
+	
+    // Open hostmasternode.conf
+    void openConfigfile();	
 
-    // Open the config file
-    bool openBitcoinConf();
+    // Open masternode.conf
+    void openMNConfigfile();	
 
     // Browse backup folder
     void showBackups();
@@ -182,11 +186,25 @@ namespace GUIUtil
     bool GetStartOnSystemStartup();
     bool SetStartOnSystemStartup(bool fAutoStart);
 
+    /** Modify Qt network specific settings on migration */
+    void migrateQtSettings();
+
+    /** Save window size and position */
+    void saveWindowGeometry(const QString& strSetting, QWidget *parent);
+    /** Restore window size and position */
+    void restoreWindowGeometry(const QString& strSetting, const QSize &defaultSizeIn, QWidget *parent);
+
+    /** Load global CSS theme */
+    QString loadStyleSheet();
+
+    /** Return name of current CSS theme */
+    QString getThemeName();
+    
     /* Convert QString to OS specific boost path through UTF-8 */
-    fs::path qstringToBoostPath(const QString &path);
+    boost::filesystem::path qstringToBoostPath(const QString &path);
 
     /* Convert OS specific boost path to QString through UTF-8 */
-    QString boostPathToQString(const fs::path &path);
+    QString boostPathToQString(const boost::filesystem::path &path);
 
     /* Convert seconds into a QString with days, hours, mins, secs */
     QString formatDurationStr(int secs);

@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,6 +20,7 @@ class PlatformStyle;
 class WalletModel;
 
 class CCoinControl;
+class CTxMemPool;
 
 namespace Ui {
     class CoinControlDialog;
@@ -78,6 +79,7 @@ private:
         COLUMN_AMOUNT,
         COLUMN_LABEL,
         COLUMN_ADDRESS,
+        COLUMN_PRIVATESEND_ROUNDS,
         COLUMN_DATE,
         COLUMN_CONFIRMATIONS,
         COLUMN_TXHASH,
@@ -106,6 +108,7 @@ private Q_SLOTS:
     void headerSectionClicked(int);
     void buttonBoxClicked(QAbstractButton*);
     void buttonSelectAllClicked();
+    void buttonToggleLockClicked();
     void updateLabelLocked();
 };
 

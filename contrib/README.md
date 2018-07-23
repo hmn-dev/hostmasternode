@@ -29,13 +29,10 @@ for Debian-based Linux systems. If you compile hostmasternoded/hostmasternode-qt
 Notes on getting Gitian builds up and running using KVM.
 
 ### [Gitian-keys](/contrib/gitian-keys)
-PGP keys used for signing Hostmasternode Core [Gitian release](/doc/release-process.md) results.
+PGP keys used for signing Bitcoin Core [Gitian release](/doc/release-process.md) results.
 
 ### [MacDeploy](/contrib/macdeploy) ###
 Scripts and notes for Mac builds. 
-
-### [RPM](/contrib/rpm) ###
-RPM spec file for building hostmasternode-core on RPM based distributions
 
 ### [Gitian-build](/contrib/gitian-build.sh) ###
 Script for running full Gitian builds.
@@ -47,4 +44,4 @@ Test and Verify Tools
 Utilities to generate test vectors for the data-driven Hostmasternode tests.
 
 ### [Verify Binaries](/contrib/verifybinaries) ###
-This script attempts to download and verify the signature file SHA256SUMS.asc from hostmasternode.com.
+This script attempts to download and verify the signature file SHA256SUMS.asc from bitcoin.org.

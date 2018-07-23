@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,6 +9,7 @@
 #include <QObject>
 
 class BitcoinGUI;
+class ClientModel;
 
 namespace Ui {
     class HelpMessageDialog;
@@ -20,7 +21,13 @@ class HelpMessageDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit HelpMessageDialog(QWidget *parent, bool about);
+    enum HelpMode {
+        about,
+        cmdline,
+        pshelp
+    };
+
+    explicit HelpMessageDialog(QWidget *parent, HelpMode helpMode);
     ~HelpMessageDialog();
 
     void printToConsole();

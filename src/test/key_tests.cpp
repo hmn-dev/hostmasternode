@@ -9,24 +9,52 @@
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "test/test_bitcoin.h"
+#include "test/test_hostmasternode.h"
 
 #include <string>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
-static const std::string strSecret1     ("6uGFQ4DSW7zh1viHZi6iiVT17CncvoaV4MHvGvJKPDaLCdymj87");
-static const std::string strSecret2     ("6vVo7sPkeLTwVdAntrv4Gbnsyr75H8ChD3P5iyHziwaqe8mCYR5");
-static const std::string strSecret1C    ("T3gJYmBuZXsdd65E7NQF88ZmUP2MaUanqnZg9GFS94W7kND4Ebjq");
-static const std::string strSecret2C    ("T986ZKRRdnuuXLeDZuKBRrZW1ujotAncU9WTrFU1n7vMgRW75ZtF");
-static const CBitcoinAddress addr1 ("LiUo6Zn39joYJBzPUhssbDwAywhjFcoHE3");
-static const CBitcoinAddress addr2 ("LZJvLSP5SGKcFS13MHgdrVhpFUbEMB5XVC");
-static const CBitcoinAddress addr1C("Lh2G82Bi33RNuzz4UfSMZbh54jnWHVnmw8");
-static const CBitcoinAddress addr2C("LWegHWHB5rmaF5rgWYt1YN3StapRdnGJfU");
+static const std::string strSecret1     ("7qh6LYnLN2w2ntz2wwUhRUEgkQ2j8XB16FGw77ZRDZmC29bn7cD");
+static const std::string strSecret2     ("7rve4MxeWFQHGbSYH6J2yaaZd3MBUqoDEwN6ZAZ6ZHmhTT4r3hW");
+static const std::string strSecret1C    ("XBuxZHH6TqXUuaSjbVTFR1DQSYecxCB9QA1Koyx5tTc3ddhqEnhm");
+static const std::string strSecret2C    ("XHMkZqWcY6Zkoq1j42NBijD8z5N5FtNy2Wx7WyAfXX2HZgxry8cr");
+static const CBitcoinAddress addr1 ("Xywgfc872nn5CKtpATCoAjZCc4v96pJczy");
+static const CBitcoinAddress addr2 ("XpmouUj9KKJ99ZuU331ZS1KqsboeFnLGgK");
+static const CBitcoinAddress addr1C("XxV9h4Xmv6Pup8tVAQmH97K6grzvDwMG9F");
+static const CBitcoinAddress addr2C("Xn7ZrYdExuk79Dm7CJCw7sfUWi2qWJSbRy");
 
 
-static const std::string strAddressBad("Lbi6bpMhSwp2CXkivEeUK9wzyQEFzHDfSr");
+static const std::string strAddressBad("Xta1praZQjyELweyMByXyiREw1ZRsjXzVP");
+
+
+#ifdef KEY_TESTS_DUMPINFO
+void dumpKeyInfo(uint256 privkey)
+{
+    CKey key;
+    key.resize(32);
+    memcpy(&secret[0], &privkey, 32);
+    std::vector<unsigned char> sec;
+    sec.resize(32);
+    memcpy(&sec[0], &secret[0], 32);
+    printf("  * secret (hex): %s\n", HexStr(sec).c_str());
+
+    for (int nCompressed=0; nCompressed<2; nCompressed++)
+    {
+        bool fCompressed = nCompressed == 1;
+        printf("  * %s:\n", fCompressed ? "compressed" : "uncompressed");
+        CBitcoinSecret bsecret;
+        bsecret.SetSecret(secret, fCompressed);
+        printf("    * secret (base58): %s\n", bsecret.ToString().c_str());
+        CKey key;
+        key.SetSecret(secret, fCompressed);
+        std::vector<unsigned char> vchPubKey = key.GetPubKey();
+        printf("    * pubkey (hex): %s\n", HexStr(vchPubKey).c_str());
+        printf("    * address (base58): %s\n", CBitcoinAddress(vchPubKey).ToString().c_str());
+    }
+}
+#endif
 
 
 BOOST_FIXTURE_TEST_SUITE(key_tests, BasicTestingSetup)

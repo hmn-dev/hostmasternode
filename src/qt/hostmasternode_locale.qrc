@@ -1,0 +1,21 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/translations">
+        <file alias="bg">locale/hostmasternode_bg.qm</file>
+        <file alias="de">locale/hostmasternode_de.qm</file>
+        <file alias="en">locale/hostmasternode_en.qm</file>
+        <file alias="es">locale/hostmasternode_es.qm</file>
+        <file alias="fi">locale/hostmasternode_fi.qm</file>
+        <file alias="fr">locale/hostmasternode_fr.qm</file>
+        <file alias="it">locale/hostmasternode_it.qm</file>
+        <file alias="ja">locale/hostmasternode_ja.qm</file>
+        <file alias="nl">locale/hostmasternode_nl.qm</file>
+        <file alias="pl">locale/hostmasternode_pl.qm</file>
+        <file alias="pt">locale/hostmasternode_pt.qm</file>
+        <file alias="ru">locale/hostmasternode_ru.qm</file>
+        <file alias="sk">locale/hostmasternode_sk.qm</file>
+        <file alias="sv">locale/hostmasternode_sv.qm</file>
+        <file alias="vi">locale/hostmasternode_vi.qm</file>
+        <file alias="zh_CN">locale/hostmasternode_zh_CN.qm</file>
+        <file alias="zh_TW">locale/hostmasternode_zh_TW.qm</file>
+    </qresource>
+</RCC>

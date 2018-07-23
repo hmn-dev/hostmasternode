@@ -50,9 +50,9 @@ Var StartMenuGroup
 # Installer attributes
 OutFile @abs_top_srcdir@/@PACKAGE_TARNAME@-${VERSION}-win@WINDOWS_BITS@-setup.exe
 !if "@WINDOWS_BITS@" == "64"
-InstallDir $PROGRAMFILES64\Hostmasternode
+InstallDir $PROGRAMFILES64\HostmasternodeCore
 !else
-InstallDir $PROGRAMFILES\Hostmasternode
+InstallDir $PROGRAMFILES\HostmasternodeCore
 !endif
 CRCCheck on
 XPStyle on
@@ -107,6 +107,10 @@ Section -post SEC0001
     WriteRegStr HKCR "@PACKAGE_TARNAME@" "" "URL:Hostmasternode"
     WriteRegStr HKCR "@PACKAGE_TARNAME@\DefaultIcon" "" $INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@
     WriteRegStr HKCR "@PACKAGE_TARNAME@\shell\open\command" "" '"$INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@" "%1"'
+
+    # Delete old key (before we switched to PACKAGE_TARNAME, which is set to 'hostmasternodecore' now, we had 'hostmasternode' hardcoded)
+    # TODO remove this line sometime later
+    DeleteRegKey HKCR "hostmasternode"
 SectionEnd
 
 # Macro for selecting uninstaller sections
@@ -146,6 +150,9 @@ Section -un.post UNSEC0001
     DeleteRegKey /IfEmpty HKCU "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKCU "${REGKEY}"
     DeleteRegKey HKCR "@PACKAGE_TARNAME@"
+    # Delete old key (before we switched to PACKAGE_TARNAME, which is set to 'hostmasternodecore' now, we had 'hostmasternode' hardcoded)
+    # TODO remove this line sometime later
+    DeleteRegKey HKCR "hostmasternode"
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
     RmDir /REBOOTOK $INSTDIR
     Push $R0

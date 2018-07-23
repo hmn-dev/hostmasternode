@@ -1,21 +1,23 @@
-Hostmasternode Core integration/staging tree
-=====================================
+Hostmasternode Core staging tree 0.12.3
+===============================
 
-[![Build Status](https://travis-ci.org/hostmasternodeproject/hostmasternode.svg?branch=master)](https://travis-ci.org/hostmasternodeproject/hostmasternode)
+`master:` [![Build Status](https://travis-ci.org/hostmasternodepay/hostmasternode.svg?branch=master)](https://travis-ci.org/hostmasternodepay/hostmasternode) `develop:` [![Build Status](https://travis-ci.org/hostmasternodepay/hostmasternode.svg?branch=develop)](https://travis-ci.org/hostmasternodepay/hostmasternode/branches)
 
-https://hostmasternode.com
+https://www.hostmasternode.com
+
 
 What is Hostmasternode?
 ----------------
 
-Hostmasternode is an experimental digital currency that enables instant payments to
-anyone, anywhere in the world. Hostmasternode uses peer-to-peer technology to operate
-with no central authority: managing transactions and issuing money are carried
-out collectively by the network. Hostmasternode Core is the name of open source
-software which enables the use of this currency.
+Hostmasternode is an experimental digital currency that enables anonymous, instant
+payments to anyone, anywhere in the world. Hostmasternode uses peer-to-peer technology
+to operate with no central authority: managing transactions and issuing money
+are carried out collectively by the network. Hostmasternode Core is the name of the open
+source software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the Hostmasternode Core software, see [https://hostmasternode.com](https://hostmasternode.com).
+the Hostmasternode Core software, see https://www.hostmasternode.com/get-hostmasternode/.
+
 
 License
 -------
@@ -26,17 +28,11 @@ information or see https://opensource.org/licenses/MIT.
 Development Process
 -------------------
 
-The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/hostmasternodeproject/hostmasternode/tags) are created
-regularly to indicate new official, stable release versions of Hostmasternode Core.
+The `master` branch is meant to be stable. Development is normally done in separate branches.
+[Tags](https://github.com/hostmasternodepay/hostmasternode/tags) are created to indicate new official,
+stable release versions of Hostmasternode Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
-
-The developer [mailing list](https://groups.google.com/forum/#!forum/hostmasternode-dev)
-should be used to discuss complicated or controversial changes before working
-on a patch set.
-
-Developer IRC can be found on Freenode at #hostmasternode-dev.
 
 Testing
 -------
@@ -53,9 +49,9 @@ submit new unit tests for old code. Unit tests can be compiled and run
 (assuming they weren't disabled in configure) with: `make check`. Further details on running
 and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).
 
-There are also [regression and integration tests](/test), written
+There are also [regression and integration tests](/qa) of the RPC interface, written
 in Python, that are run automatically on the build server.
-These tests can be run (if the [test dependencies](/test) are installed) with: `test/functional/test_runner.py`
+These tests can be run (if the [test dependencies](/qa) are installed) with: `qa/pull-tester/rpc-tests.py`
 
 The Travis CI system makes sure that every pull request is built for Windows, Linux, and OS X, and that unit/sanity tests are run automatically.
 
@@ -69,11 +65,13 @@ not straightforward.
 Translations
 ------------
 
-We only accept translation fixes that are submitted through [Bitcoin Core's Transifex page](https://www.transifex.com/projects/p/bitcoin/).
-Translations are converted to Hostmasternode periodically.
+Changes to translations as well as new translations can be submitted to
+[Hostmasternode Core's Transifex page](https://www.transifex.com/projects/p/hostmasternode/).
 
 Translations are periodically pulled from Transifex and merged into the git repository. See the
 [translation process](doc/translation_process.md) for details on how this works.
 
 **Important**: We do not accept translation changes as GitHub pull requests because the next
 pull from Transifex would automatically overwrite them again.
+
+Translators should also follow the [forum](https://www.hostmasternode.com/forum/topic/hostmasternode-worldwide-collaboration.88/).

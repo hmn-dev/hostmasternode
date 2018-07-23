@@ -1,4 +1,4 @@
-// Copyright (c) 2012-2016 The Bitcoin Core developers
+// Copyright (c) 2012-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,12 +6,13 @@
 #define BITCOIN_DBWRAPPER_H
 
 #include "clientversion.h"
-#include "fs.h"
 #include "serialize.h"
 #include "streams.h"
 #include "util.h"
 #include "utilstrencodings.h"
 #include "version.h"
+
+#include <boost/filesystem/path.hpp>
 
 #include <leveldb/db.h>
 #include <leveldb/write_batch.h>
@@ -59,7 +60,7 @@ private:
 
 public:
     /**
-     * @param[in] _parent   CDBWrapper that this batch is to be submitted to
+     * @param[in] parent    CDBWrapper that this batch is to be submitted to
      */
     CDBBatch(const CDBWrapper &_parent) : parent(_parent), ssKey(SER_DISK, CLIENT_VERSION), ssValue(SER_DISK, CLIENT_VERSION), size_estimate(0) { };
 
@@ -82,8 +83,6 @@ public:
         leveldb::Slice slValue(ssValue.data(), ssValue.size());
 
         batch.Put(slKey, slValue);
-        // LevelDB serializes writes as:
-        // - byte: header
         // - varint: key length (1 byte up to 127B, 2 bytes up to 16383B, ...)
         // - byte[]: key
         // - varint: value length
@@ -102,7 +101,6 @@ public:
         leveldb::Slice slKey(ssKey.data(), ssKey.size());
 
         batch.Delete(slKey);
-        // LevelDB serializes erases as:
         // - byte: header
         // - varint: key length
         // - byte[]: key
@@ -155,6 +153,10 @@ public:
         return true;
     }
 
+    unsigned int GetKeySize() {
+        return piter->key().size();
+    }
+
     template<typename V> bool GetValue(V& value) {
         leveldb::Slice slValue = piter->value();
         try {
@@ -177,7 +179,7 @@ class CDBWrapper
 {
     friend const std::vector<unsigned char>& dbwrapper_private::GetObfuscateKey(const CDBWrapper &w);
 private:
-    //! custom environment this database is using (may be nullptr in case of default environment)
+    //! custom environment this database is using (may be NULL in case of default environment)
     leveldb::Env* penv;
 
     //! database options used
@@ -218,7 +220,7 @@ public:
      * @param[in] obfuscate   If true, store data obfuscated via simple XOR. If false, XOR
      *                        with a zero'd byte array.
      */
-    CDBWrapper(const fs::path& path, size_t nCacheSize, bool fMemory = false, bool fWipe = false, bool obfuscate = false, leveldb::Comparator *pComparator = NULL);
+    CDBWrapper(const boost::filesystem::path& path, size_t nCacheSize, bool fMemory = false, bool fWipe = false, bool obfuscate = false);
     ~CDBWrapper();
 
     template <typename K, typename V>

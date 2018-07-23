@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,7 +16,10 @@
 
 class CBlockIndex;
 class CChainParams;
+class CConnman;
+class CReserveKey;
 class CScript;
+class CWallet;
 
 namespace Consensus { struct Params; };
 
@@ -26,8 +29,7 @@ struct CBlockTemplate
 {
     CBlock block;
     std::vector<CAmount> vTxFees;
-    std::vector<int64_t> vTxSigOpsCost;
-    std::vector<unsigned char> vchCoinbaseCommitment;
+    std::vector<int64_t> vTxSigOps;
 };
 
 // Container for tracking updates to ancestor feerate as we include (parent)
@@ -38,13 +40,13 @@ struct CTxMemPoolModifiedEntry {
         iter = entry;
         nSizeWithAncestors = entry->GetSizeWithAncestors();
         nModFeesWithAncestors = entry->GetModFeesWithAncestors();
-        nSigOpCostWithAncestors = entry->GetSigOpCostWithAncestors();
+        nSigOpCountWithAncestors = entry->GetSigOpCountWithAncestors();
     }
 
     CTxMemPool::txiter iter;
     uint64_t nSizeWithAncestors;
     CAmount nModFeesWithAncestors;
-    int64_t nSigOpCostWithAncestors;
+    unsigned int nSigOpCountWithAncestors;
 };
 
 /** Comparator for CTxMemPool::txiter objects.
@@ -122,7 +124,7 @@ struct update_for_parent_inclusion
     {
         e.nModFeesWithAncestors -= iter->GetFee();
         e.nSizeWithAncestors -= iter->GetTxSize();
-        e.nSigOpCostWithAncestors -= iter->GetSigOpCost();
+        e.nSigOpCountWithAncestors -= iter->GetSigOpCount();
     }
 
     CTxMemPool::txiter iter;
@@ -138,14 +140,13 @@ private:
     CBlock* pblock;
 
     // Configuration parameters for the block size
-    bool fIncludeWitness;
-    unsigned int nBlockMaxWeight;
+    unsigned int nBlockMaxSize;
     CFeeRate blockMinFeeRate;
 
     // Information on the current status of the block
-    uint64_t nBlockWeight;
+    uint64_t nBlockSize;
     uint64_t nBlockTx;
-    uint64_t nBlockSigOpsCost;
+    unsigned int nBlockSigOps;
     CAmount nFees;
     CTxMemPool::setEntries inBlock;
 
@@ -154,19 +155,14 @@ private:
     int64_t nLockTimeCutoff;
     const CChainParams& chainparams;
 
+    // Variables used for addPriorityTxs
+    int lastFewTxs;
+    bool blockFinished;
+
 public:
-    struct Options {
-        Options();
-        size_t nBlockMaxWeight;
-        size_t nBlockMaxSize;
-        CFeeRate blockMinFeeRate;
-    };
-
-    BlockAssembler(const CChainParams& params);
-    BlockAssembler(const CChainParams& params, const Options& options);
-
+    BlockAssembler(const CChainParams& chainparams);
     /** Construct a new block template with coinbase to scriptPubKeyIn */
-    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true);
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn);
 
 private:
     // utility functions
@@ -176,18 +172,26 @@ private:
     void AddToBlock(CTxMemPool::txiter iter);
 
     // Methods for how to add transactions to a block.
+    /** Add transactions based on tx "priority" */
+    void addPriorityTxs();
     /** Add transactions based on feerate including unconfirmed ancestors
       * Increments nPackagesSelected / nDescendantsUpdated with corresponding
       * statistics from the package selection (for logging statistics). */
     void addPackageTxs(int &nPackagesSelected, int &nDescendantsUpdated);
 
+    // helper function for addPriorityTxs
+    /** Test if tx will still "fit" in the block */
+    bool TestForBlock(CTxMemPool::txiter iter);
+    /** Test if tx still has unconfirmed parents not yet in block */
+    bool isStillDependent(CTxMemPool::txiter iter);
+
     // helper functions for addPackageTxs()
     /** Remove confirmed (inBlock) entries from given set */
     void onlyUnconfirmed(CTxMemPool::setEntries& testSet);
     /** Test if a new package would "fit" in the block */
-    bool TestPackage(uint64_t packageSize, int64_t packageSigOpsCost);
+    bool TestPackage(uint64_t packageSize, unsigned int packageSigOps);
     /** Perform checks on each transaction in a package:
-      * locktime, premature-witness, serialized size (if necessary)
+      * locktime
       * These checks should always succeed, and they're here
       * only as an extra check in case of suboptimal node configuration */
     bool TestPackageTransactions(const CTxMemPool::setEntries& package);

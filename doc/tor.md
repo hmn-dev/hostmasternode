@@ -1,16 +1,19 @@
-TOR SUPPORT IN HOSTMASTERNODE
-======================
+TOR SUPPORT IN HMN CORE
+=======================
 
-It is possible to run Hostmasternode as a Tor hidden service, and connect to such services.
+It is possible to run Hostmasternode Core as a Tor hidden service, and connect to such services.
 
-The following directions assume you have a Tor proxy running on port 9050. Many distributions default to having a SOCKS proxy listening on port 9050, but others may not. In particular, the Tor Browser Bundle defaults to listening on port 9150. See [Tor Project FAQ:TBBSocksPort](https://www.torproject.org/docs/faq.html.en#TBBSocksPort) for how to properly
-configure Tor.
+The following directions assume you have a Tor proxy running on port 9050. Many
+distributions default to having a SOCKS proxy listening on port 9050, but others
+may not. In particular, the Tor Browser Bundle defaults to listening on port 9150.
+See [Tor Project FAQ:TBBSocksPort](https://www.torproject.org/docs/faq.html.en#TBBSocksPort)
+for how to properly configure Tor.
 
 
-1. Run hostmasternode behind a Tor proxy
----------------------------------
+1. Run Hostmasternode Core behind a Tor proxy
+----------------------------------
 
-The first step is running Hostmasternode behind a Tor proxy. This will already make all
+The first step is running Hostmasternode Core behind a Tor proxy. This will already make all
 outgoing connections be anonymized, but more is possible.
 
 	-proxy=ip:port  Set the proxy server. If SOCKS5 is selected (default), this proxy
@@ -29,29 +32,36 @@ outgoing connections be anonymized, but more is possible.
 	-seednode=X     SOCKS5. In Tor mode, such addresses can also be exchanged with
 	                other P2P nodes.
 
+	-onlynet=tor    Only connect to .onion nodes and drop IPv4/6 connections.
+
+An example how to start the client if the Tor proxy is running on local host on
+port 9050 and only allows .onion nodes to connect:
+
+	./hostmasternoded -onion=127.0.0.1:9050 -onlynet=tor -listen=0 -addnode=ssapp53tmftyjmjb.onion
+
 In a typical situation, this suffices to run behind a Tor proxy:
 
-	./hostmasternode -proxy=127.0.0.1:9050
+	./hostmasternoded -proxy=127.0.0.1:9050
 
 
-2. Run a hostmasternode hidden server
-------------------------------
+2. Run a Hostmasternode Core hidden server
+-------------------------------
 
 If you configure your Tor system accordingly, it is possible to make your node also
 reachable from the Tor network. Add these lines to your /etc/tor/torrc (or equivalent
 config file):
 
-	HiddenServiceDir /var/lib/tor/hostmasternode-service/
-	HiddenServicePort 9401 127.0.0.1:9401
-	HiddenServicePort 19403 127.0.0.1:19403
+	HiddenServiceDir /var/lib/tor/hostmasternodecore-service/
+	HiddenServicePort 9999 127.0.0.1:9999
+	HiddenServicePort 19999 127.0.0.1:19999
 
 The directory can be different of course, but (both) port numbers should be equal to
-your hostmasternoded's P2P listen port (9401 by default).
+your hostmasternoded's P2P listen port (9999 by default).
 
-	-externalip=X   You can tell hostmasternode about its publicly reachable address using
+	-externalip=X   You can tell Hostmasternode Core about its publicly reachable address using
 	                this option, and this can be a .onion address. Given the above
 	                configuration, you can find your onion address in
-	                /var/lib/tor/hostmasternode-service/hostname. Onion addresses are given
+	                /var/lib/tor/hostmasternodecore-service/hostname. Onion addresses are given
 	                preference for your node to advertise itself with, for connections
 	                coming from unroutable addresses (such as 127.0.0.1, where the
 	                Tor proxy typically runs).
@@ -68,7 +78,7 @@ your hostmasternoded's P2P listen port (9401 by default).
 
 In a typical situation, where you're only reachable via Tor, this should suffice:
 
-	./hostmasternoded -proxy=127.0.0.1:9050 -externalip=57qr3yd1nyntf5k.onion -listen
+	./hostmasternoded -proxy=127.0.0.1:9050 -externalip=ssapp53tmftyjmjb.onion -listen
 
 (obviously, replace the Onion address with your own). It should be noted that you still
 listen on all devices and another node could establish a clearnet connection, when knowing
@@ -81,14 +91,31 @@ as well, use `discover` instead:
 
 	./hostmasternoded ... -discover
 
-and open port 9401 on your firewall (or use -upnp).
+and open port 9999 on your firewall (or use -upnp).
 
 If you only want to use Tor to reach onion addresses, but not use it as a proxy
 for normal IPv4/IPv6 communication, use:
 
-	./hostmasternode -onion=127.0.0.1:9050 -externalip=57qr3yd1nyntf5k.onion -discover
+	./hostmasternoded -onion=127.0.0.1:9050 -externalip=ssapp53tmftyjmjb.onion -discover
 
-3. Automatically listen on Tor
+
+3. List of known Hostmasternode Core Tor relays
+------------------------------------
+
+* [darkcoinie7ghp67.onion](http://darkcoinie7ghp67.onion/)
+* [drktalkwaybgxnoq.onion](http://drktalkwaybgxnoq.onion/)
+* [drkcoinooditvool.onion](http://drkcoinooditvool.onion/)
+* [darkcoxbtzggpmcc.onion](http://darkcoxbtzggpmcc.onion/)
+* [ssapp53tmftyjmjb.onion](http://ssapp53tmftyjmjb.onion/)
+* [j2dfl3cwxyxpbc7s.onion](http://j2dfl3cwxyxpbc7s.onion/)
+* [vf6d2mxpuhh2cbxt.onion](http://vf6d2mxpuhh2cbxt.onion/)
+* [rj24sicr6i4vsnkv.onion](http://rj24sicr6i4vsnkv.onion/)
+* [wrwx2dy7jyh32o53.onion](http://wrwx2dy7jyh32o53.onion/)
+* [f5ekot4ajkbe23gt.onion](http://f5ekot4ajkbe23gt.onion/)
+* [dshtord4mqvgzqev.onion](http://dshtord4mqvgzqev.onion/)
+
+
+4. Automatically listen on Tor
 --------------------------------
 
 Starting with Tor version 0.2.7.1 it is possible, through Tor's control socket
@@ -118,7 +145,7 @@ Tor configuration.
 4. Privacy recommendations
 ---------------------------
 
-- Do not add anything but hostmasternode ports to the hidden service created in section 2.
+- Do not add anything but bitcoin ports to the hidden service created in section 2.
   If you run a web service too, create a new hidden service for that.
   Otherwise it is trivial to link them, which may reduce privacy. Hidden
   services created automatically (as in section 3) always have only one port

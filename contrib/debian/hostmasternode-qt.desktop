@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Hostmasternode Core
+Comment=Hostmasternode P2P Cryptocurrency
+Comment[de]=Verbinde mit dem Hostmasternode peer-to-peer Netzwerk
+Comment[fr]=Hostmasternode, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Hostmasternode, eşten eşe kriptografik sanal para birimi
+Exec=hostmasternode-qt %u
+Terminal=false
+Type=Application
+Icon=hostmasternode128
+MimeType=x-scheme-handler/hostmasternode;
+Categories=Office;Finance;

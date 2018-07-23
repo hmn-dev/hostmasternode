@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,7 +6,7 @@
 #define BITCOIN_NETBASE_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
+#include "config/hostmasternode-config.h"
 #endif
 
 #include "compat.h"
@@ -24,6 +24,7 @@ extern bool fNameLookup;
 static const int DEFAULT_CONNECT_TIMEOUT = 5000;
 //! -dns default
 static const int DEFAULT_NAME_LOOKUP = true;
+static const bool DEFAULT_ALLOWPRIVATENET = false;
 
 class proxyType
 {
@@ -39,6 +40,7 @@ public:
 
 enum Network ParseNetwork(std::string net);
 std::string GetNetworkName(enum Network net);
+void SplitHostPort(std::string in, int &portOut, std::string &hostOut);
 bool SetProxy(enum Network net, const proxyType &addrProxy);
 bool GetProxy(enum Network net, proxyType &proxyInfoOut);
 bool IsProxy(const CNetAddr &addr);
@@ -57,9 +59,7 @@ std::string NetworkErrorString(int err);
 /** Close socket and set hSocket to INVALID_SOCKET */
 bool CloseSocket(SOCKET& hSocket);
 /** Disable or enable blocking-mode for a socket */
-bool SetSocketNonBlocking(const SOCKET& hSocket, bool fNonBlocking);
-/** Set the TCP_NODELAY flag on a socket */
-bool SetSocketNoDelay(const SOCKET& hSocket);
+bool SetSocketNonBlocking(SOCKET& hSocket, bool fNonBlocking);
 /**
  * Convert milliseconds to a struct timeval for e.g. select.
  */

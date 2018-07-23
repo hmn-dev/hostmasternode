@@ -18,7 +18,8 @@ ui(new Ui::ModalOverlay),
 bestHeaderHeight(0),
 bestHeaderDate(QDateTime()),
 layerIsVisible(false),
-userClosed(false)
+userClosed(false),
+foreverHidden(false)
 {
     ui->setupUi(this);
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(closeClicked()));
@@ -82,30 +83,28 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
     blockProcessTime.push_front(qMakePair(currentDate.toMSecsSinceEpoch(), nVerificationProgress));
 
     // show progress speed if we have more then one sample
-    if (blockProcessTime.size() >= 2)
-    {
-        double progressStart = blockProcessTime[0].second;
+    if (blockProcessTime.size() >= 2) {
         double progressDelta = 0;
         double progressPerHour = 0;
         qint64 timeDelta = 0;
         qint64 remainingMSecs = 0;
         double remainingProgress = 1.0 - nVerificationProgress;
-        for (int i = 1; i < blockProcessTime.size(); i++)
-        {
+        for (int i = 1; i < blockProcessTime.size(); i++) {
             QPair<qint64, double> sample = blockProcessTime[i];
 
             // take first sample after 500 seconds or last available one
             if (sample.first < (currentDate.toMSecsSinceEpoch() - 500 * 1000) || i == blockProcessTime.size() - 1) {
-                progressDelta = progressStart-sample.second;
+                progressDelta = blockProcessTime[0].second - sample.second;
                 timeDelta = blockProcessTime[0].first - sample.first;
-                progressPerHour = progressDelta/(double)timeDelta*1000*3600;
+                progressPerHour = progressDelta / (double) timeDelta * 1000 * 3600;
                 remainingMSecs = (progressDelta > 0) ? remainingProgress / progressDelta * timeDelta : -1;
                 break;
             }
         }
         // show progress increase per hour
-        ui->progressIncreasePerH->setText(QString::number(progressPerHour*100, 'f', 2)+"%");
+        ui->progressIncreasePerH->setText(QString::number(progressPerHour * 100, 'f', 2)+"%");
 
+        // show expected remaining time
         if(remainingMSecs >= 0) {	
             ui->expectedTimeLeft->setText(GUIUtil::formatNiceTimeOffset(remainingMSecs / 1000.0));
         } else {
@@ -113,8 +112,9 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
         }
 
         static const int MAX_SAMPLES = 5000;
-        if (blockProcessTime.count() > MAX_SAMPLES)
-            blockProcessTime.remove(MAX_SAMPLES, blockProcessTime.count()-MAX_SAMPLES);
+        if (blockProcessTime.count() > MAX_SAMPLES) {
+            blockProcessTime.remove(MAX_SAMPLES, blockProcessTime.count() - MAX_SAMPLES);
+        }
     }
 
     // show the last block date
@@ -129,7 +129,7 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
         return;
 
     // estimate the number of headers left based on nPowTargetSpacing
-    // and check if the gui is not aware of the best header (happens rarely)
+    // and check if the gui is not aware of the the best header (happens rarely)
     int estimateNumHeadersLeft = bestHeaderDate.secsTo(currentDate) / Params().GetConsensus().nPowTargetSpacing;
     bool hasBestHeader = bestHeaderHeight >= count;
 
@@ -154,6 +154,9 @@ void ModalOverlay::showHide(bool hide, bool userRequested)
     if ( (layerIsVisible && !hide) || (!layerIsVisible && hide) || (!hide && userClosed && !userRequested))
         return;
 
+    if (!hide && foreverHidden)
+        return;
+
     if (!isVisible() && !hide)
         setVisible(true);
 
@@ -172,4 +175,9 @@ void ModalOverlay::closeClicked()
 {
     showHide(true);
     userClosed = true;
+}
+
+void ModalOverlay::hideForever()
+{
+    foreverHidden = true;
 }

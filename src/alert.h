@@ -8,7 +8,6 @@
 
 #include "serialize.h"
 #include "sync.h"
-#include "net.h"
 
 #include <map>
 #include <set>
@@ -17,9 +16,8 @@
 
 class CAlert;
 class CNode;
+class CConnman;
 class uint256;
-
-#define PAIRTYPE(t1, t2)    std::pair<t1, t2>
 
 extern std::map<uint256, CAlert> mapAlerts;
 extern CCriticalSection cs_mapAlerts;
@@ -54,7 +52,6 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(this->nVersion);
-        nVersion = this->nVersion;
         READWRITE(nRelayUntil);
         READWRITE(nExpiration);
         READWRITE(nID);
@@ -103,9 +100,10 @@ public:
     bool AppliesTo(int nVersion, const std::string& strSubVerIn) const;
     bool AppliesToMe() const;
     bool RelayTo(CNode* pnode, CConnman& connman) const;
+    bool Sign();
     bool CheckSignature(const std::vector<unsigned char>& alertKey) const;
-    bool ProcessAlert(const std::vector<unsigned char>& alertKey, bool fThread = true); // fThread means run -alertnotify in a free-running thread
-    static void Notify(const std::string& strMessage, bool fThread);
+    bool ProcessAlert(const std::vector<unsigned char>& alertKey, bool fThread = true) const; // fThread means run -alertnotify in a free-running thread
+    static void Notify(const std::string& strMessage, bool fThread = true);
 
     /*
      * Get copy of (active) alert object by hash. Returns a null alert if it is not found.

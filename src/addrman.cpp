@@ -1,5 +1,5 @@
 // Copyright (c) 2012 Pieter Wuille
-// Copyright (c) 2012-2016 The Bitcoin Core developers
+// Copyright (c) 2012-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -65,24 +65,34 @@ double CAddrInfo::GetChance(int64_t nNow) const
     return fChance;
 }
 
-CAddrInfo* CAddrMan::Find(const CNetAddr& addr, int* pnId)
+CAddrInfo* CAddrMan::Find(const CService& addr, int* pnId)
 {
-    std::map<CNetAddr, int>::iterator it = mapAddr.find(addr);
+    CService addr2 = addr;
+    if (!discriminatePorts) {
+        addr2.SetPort(0);
+    }
+
+    std::map<CService, int>::iterator it = mapAddr.find(addr2);
     if (it == mapAddr.end())
-        return nullptr;
+        return NULL;
     if (pnId)
         *pnId = (*it).second;
     std::map<int, CAddrInfo>::iterator it2 = mapInfo.find((*it).second);
     if (it2 != mapInfo.end())
         return &(*it2).second;
-    return nullptr;
+    return NULL;
 }
 
 CAddrInfo* CAddrMan::Create(const CAddress& addr, const CNetAddr& addrSource, int* pnId)
 {
+    CService addr2 = addr;
+    if (!discriminatePorts) {
+        addr2.SetPort(0);
+    }
+
     int nId = nIdCount++;
     mapInfo[nId] = CAddrInfo(addr, addrSource);
-    mapAddr[addr] = nId;
+    mapAddr[addr2] = nId;
     mapInfo[nId].nRandomPos = vRandom.size();
     vRandom.push_back(nId);
     if (pnId)
@@ -117,9 +127,14 @@ void CAddrMan::Delete(int nId)
     assert(!info.fInTried);
     assert(info.nRefCount == 0);
 
+    CService addr = info;
+    if (!discriminatePorts) {
+        addr.SetPort(0);
+    }
+
     SwapRandom(info.nRandomPos, vRandom.size() - 1);
     vRandom.pop_back();
-    mapAddr.erase(info);
+    mapAddr.erase(addr);
     mapInfo.erase(nId);
     nNew--;
 }
@@ -233,7 +248,7 @@ void CAddrMan::Good_(const CService& addr, int64_t nTime)
     if (nUBucket == -1)
         return;
 
-    LogPrint(BCLog::ADDRMAN, "Moving %s to tried\n", addr.ToString());
+    LogPrint("addrman", "Moving %s to tried\n", addr.ToString());
 
     // move nId to the tried tables
     MakeTried(info, nId);
@@ -351,8 +366,8 @@ CAddrInfo CAddrMan::Select_(bool newOnly)
             int nKBucket = RandomInt(ADDRMAN_TRIED_BUCKET_COUNT);
             int nKBucketPos = RandomInt(ADDRMAN_BUCKET_SIZE);
             while (vvTried[nKBucket][nKBucketPos] == -1) {
-                nKBucket = (nKBucket + insecure_rand.randbits(ADDRMAN_TRIED_BUCKET_COUNT_LOG2)) % ADDRMAN_TRIED_BUCKET_COUNT;
-                nKBucketPos = (nKBucketPos + insecure_rand.randbits(ADDRMAN_BUCKET_SIZE_LOG2)) % ADDRMAN_BUCKET_SIZE;
+                nKBucket = (nKBucket + insecure_rand.rand32()) % ADDRMAN_TRIED_BUCKET_COUNT;
+                nKBucketPos = (nKBucketPos + insecure_rand.rand32()) % ADDRMAN_BUCKET_SIZE;
             }
             int nId = vvTried[nKBucket][nKBucketPos];
             assert(mapInfo.count(nId) == 1);
@@ -368,8 +383,8 @@ CAddrInfo CAddrMan::Select_(bool newOnly)
             int nUBucket = RandomInt(ADDRMAN_NEW_BUCKET_COUNT);
             int nUBucketPos = RandomInt(ADDRMAN_BUCKET_SIZE);
             while (vvNew[nUBucket][nUBucketPos] == -1) {
-                nUBucket = (nUBucket + insecure_rand.randbits(ADDRMAN_NEW_BUCKET_COUNT_LOG2)) % ADDRMAN_NEW_BUCKET_COUNT;
-                nUBucketPos = (nUBucketPos + insecure_rand.randbits(ADDRMAN_BUCKET_SIZE_LOG2)) % ADDRMAN_BUCKET_SIZE;
+                nUBucket = (nUBucket + insecure_rand.rand32()) % ADDRMAN_NEW_BUCKET_COUNT;
+                nUBucketPos = (nUBucketPos + insecure_rand.rand32()) % ADDRMAN_BUCKET_SIZE;
             }
             int nId = vvNew[nUBucket][nUBucketPos];
             assert(mapInfo.count(nId) == 1);

@@ -5,12 +5,12 @@
 #ifndef BITCOIN_CHECKQUEUE_H
 #define BITCOIN_CHECKQUEUE_H
 
-#include "sync.h"
-
 #include <algorithm>
 #include <vector>
 
+#include <boost/foreach.hpp>
 #include <boost/thread/condition_variable.hpp>
+#include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
 
 template <typename T>
@@ -119,7 +119,7 @@ private:
                 fOk = fAllOk;
             }
             // execute work
-            for (T& check : vChecks)
+            BOOST_FOREACH (T& check, vChecks)
                 if (fOk)
                     fOk = check();
             vChecks.clear();
@@ -149,7 +149,7 @@ public:
     void Add(std::vector<T>& vChecks)
     {
         boost::unique_lock<boost::mutex> lock(mutex);
-        for (T& check : vChecks) {
+        BOOST_FOREACH (T& check, vChecks) {
             queue.push_back(T());
             check.swap(queue.back());
         }
@@ -183,15 +183,15 @@ public:
     CCheckQueueControl& operator=(const CCheckQueueControl&) = delete;
     explicit CCheckQueueControl(CCheckQueue<T> * const pqueueIn) : pqueue(pqueueIn), fDone(false)
     {
-        // passed queue is supposed to be unused, or nullptr
-        if (pqueue != nullptr) {
+        // passed queue is supposed to be unused, or NULL
+        if (pqueue != NULL) {
             ENTER_CRITICAL_SECTION(pqueue->ControlMutex);
         }
     }
 
     bool Wait()
     {
-        if (pqueue == nullptr)
+        if (pqueue == NULL)
             return true;
         bool fRet = pqueue->Wait();
         fDone = true;
@@ -200,7 +200,7 @@ public:
 
     void Add(std::vector<T>& vChecks)
     {
-        if (pqueue != nullptr)
+        if (pqueue != NULL)
             pqueue->Add(vChecks);
     }
 
@@ -208,7 +208,7 @@ public:
     {
         if (!fDone)
             Wait();
-        if (pqueue != nullptr) {
+        if (pqueue != NULL) {
             LEAVE_CRITICAL_SECTION(pqueue->ControlMutex);
         }
     }

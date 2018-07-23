@@ -7,10 +7,10 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/hostmasternodeproject/hostmasternode-detached-sigs.git"
+- "url": "https://github.com/hostmasternodepay/hostmasternode-detached-sigs.git"
   "dir": "signature"
 files:
-- "hostmasternode-osx-unsigned.tar.gz"
+- "hostmasternodecore-osx-unsigned.tar.gz"
 script: |
   WRAP_DIR=$HOME/wrapped
   mkdir -p ${WRAP_DIR}
@@ -27,8 +27,8 @@ script: |
     chmod +x ${WRAP_DIR}/${prog}
   done
 
-  UNSIGNED=hostmasternode-osx-unsigned.tar.gz
-  SIGNED=hostmasternode-osx-signed.dmg
+  UNSIGNED=hostmasternodecore-osx-unsigned.tar.gz
+  SIGNED=hostmasternodecore-osx-signed.dmg
 
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"

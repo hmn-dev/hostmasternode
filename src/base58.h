@@ -26,7 +26,7 @@
 
 /**
  * Encode a byte sequence as a base58-encoded string.
- * pbegin and pend cannot be nullptr, unless both are.
+ * pbegin and pend cannot be NULL, unless both are.
  */
 std::string EncodeBase58(const unsigned char* pbegin, const unsigned char* pend);
 
@@ -38,7 +38,7 @@ std::string EncodeBase58(const std::vector<unsigned char>& vch);
 /**
  * Decode a base58-encoded string (psz) into a byte vector (vchRet).
  * return true if decoding is successful.
- * psz cannot be nullptr.
+ * psz cannot be NULL.
  */
 bool DecodeBase58(const char* psz, std::vector<unsigned char>& vchRet);
 
@@ -95,17 +95,17 @@ public:
     bool operator> (const CBase58Data& b58) const { return CompareTo(b58) >  0; }
 };
 
-/** base58-encoded Bitcoin addresses.
- * Public-key-hash-addresses have version 0 (or 111 testnet).
+/** base58-encoded Hostmasternode addresses.
+ * Public-key-hash-addresses have version 76 (or 140 testnet).
  * The data vector contains RIPEMD160(SHA256(pubkey)), where pubkey is the serialized public key.
- * Script-hash-addresses have version 5 (or 196 testnet).
+ * Script-hash-addresses have version 16 (or 19 testnet).
  * The data vector contains RIPEMD160(SHA256(cscript)), where cscript is the serialized redemption script.
  */
 class CBitcoinAddress : public CBase58Data {
 public:
     bool Set(const CKeyID &id);
-    bool Set(const CScriptID &id, CChainParams::Base58Type type=CChainParams::SCRIPT_ADDRESS2);
-    bool Set(const CTxDestination &dest, CChainParams::Base58Type type=CChainParams::SCRIPT_ADDRESS2);
+    bool Set(const CScriptID &id);
+    bool Set(const CTxDestination &dest);
     bool IsValid() const;
     bool IsValid(const CChainParams &params) const;
 
@@ -116,6 +116,7 @@ public:
 
     CTxDestination Get() const;
     bool GetKeyID(CKeyID &keyID) const;
+    bool GetIndexKey(uint160& hashBytes, int& type) const;
     bool IsScript() const;
 };
 
@@ -127,9 +128,9 @@ class CBitcoinSecret : public CBase58Data
 public:
     void SetKey(const CKey& vchSecret);
     CKey GetKey();
-    bool IsValid(bool bOldPrefix = false) const;
-    bool SetString(const char* pszSecret, bool bOldPrefix = false);
-    bool SetString(const std::string& strSecret, bool bOldPrefix = false);
+    bool IsValid() const;
+    bool SetString(const char* pszSecret);
+    bool SetString(const std::string& strSecret);
 
     CBitcoinSecret(const CKey& vchSecret) { SetKey(vchSecret); }
     CBitcoinSecret() {}
@@ -148,7 +149,7 @@ public:
         K ret;
         if (vchData.size() == Size) {
             // If base58 encoded data does not hold an ext key, return a !IsValid() key
-            ret.Decode(vchData.data());
+            ret.Decode(&vchData[0]);
         }
         return ret;
     }

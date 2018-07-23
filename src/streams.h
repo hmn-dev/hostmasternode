@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,53 +21,6 @@
 #include <string.h>
 #include <utility>
 #include <vector>
-
-template<typename Stream>
-class OverrideStream
-{
-    Stream* stream;
-
-    const int nType;
-    const int nVersion;
-
-public:
-    OverrideStream(Stream* stream_, int nType_, int nVersion_) : stream(stream_), nType(nType_), nVersion(nVersion_) {}
-
-    template<typename T>
-    OverrideStream<Stream>& operator<<(const T& obj)
-    {
-        // Serialize to this stream
-        ::Serialize(*this, obj);
-        return (*this);
-    }
-
-    template<typename T>
-    OverrideStream<Stream>& operator>>(T& obj)
-    {
-        // Unserialize from this stream
-        ::Unserialize(*this, obj);
-        return (*this);
-    }
-
-    void write(const char* pch, size_t nSize)
-    {
-        stream->write(pch, nSize);
-    }
-
-    void read(char* pch, size_t nSize)
-    {
-        stream->read(pch, nSize);
-    }
-
-    int GetVersion() const { return nVersion; }
-    int GetType() const { return nType; }
-};
-
-template<typename S>
-OverrideStream<S> WithOrVersion(S* s, int nVersionFlag)
-{
-    return OverrideStream<S>(s, s->GetType(), s->GetVersion() | nVersionFlag);
-}
 
 /* Minimal stream for overwriting and/or appending to an existing byte vector
  *
@@ -130,6 +83,10 @@ class CVectorWriter
         nPos += nSize;
         if(nPos > vchData.size())
             vchData.resize(nPos);
+    }
+    size_t size() const
+    {
+        return vchData.size() - nPos;
     }
 private:
     const int nType;
@@ -389,7 +346,7 @@ public:
     {
         // Special case: stream << stream concatenates like stream += stream
         if (!vch.empty())
-            s.write((char*)vch.data(), vch.size() * sizeof(value_type));
+            s.write((char*)&vch[0], vch.size() * sizeof(vch[0]));
     }
 
     template<typename T>
@@ -408,8 +365,8 @@ public:
         return (*this);
     }
 
-    void GetAndClear(CSerializeData &d) {
-        d.insert(d.end(), begin(), end());
+    void GetAndClear(CSerializeData &data) {
+        data.insert(data.end(), begin(), end());
         clear();
     }
 
@@ -479,7 +436,7 @@ public:
     {
         if (file) {
             ::fclose(file);
-            file = nullptr;
+            file = NULL;
         }
     }
 
@@ -487,7 +444,7 @@ public:
      * @note This will invalidate the CAutoFile object, and makes it the responsibility of the caller
      * of this function to clean up the returned FILE*.
      */
-    FILE* release()             { FILE* ret = file; file = nullptr; return ret; }
+    FILE* release()             { FILE* ret = file; file = NULL; return ret; }
 
     /** Get wrapped FILE* without transfer of ownership.
      * @note Ownership of the FILE* will remain with this class. Use this only if the scope of the
@@ -495,9 +452,9 @@ public:
      */
     FILE* Get() const           { return file; }
 
-    /** Return true if the wrapped FILE* is nullptr, false otherwise.
+    /** Return true if the wrapped FILE* is NULL, false otherwise.
      */
-    bool IsNull() const         { return (file == nullptr); }
+    bool IsNull() const         { return (file == NULL); }
 
     //
     // Stream subset
@@ -508,7 +465,7 @@ public:
     void read(char* pch, size_t nSize)
     {
         if (!file)
-            throw std::ios_base::failure("CAutoFile::read: file handle is nullptr");
+            throw std::ios_base::failure("CAutoFile::read: file handle is NULL");
         if (fread(pch, 1, nSize, file) != nSize)
             throw std::ios_base::failure(feof(file) ? "CAutoFile::read: end of file" : "CAutoFile::read: fread failed");
     }
@@ -516,7 +473,7 @@ public:
     void ignore(size_t nSize)
     {
         if (!file)
-            throw std::ios_base::failure("CAutoFile::ignore: file handle is nullptr");
+            throw std::ios_base::failure("CAutoFile::ignore: file handle is NULL");
         unsigned char data[4096];
         while (nSize > 0) {
             size_t nNow = std::min<size_t>(nSize, sizeof(data));
@@ -529,7 +486,7 @@ public:
     void write(const char* pch, size_t nSize)
     {
         if (!file)
-            throw std::ios_base::failure("CAutoFile::write: file handle is nullptr");
+            throw std::ios_base::failure("CAutoFile::write: file handle is NULL");
         if (fwrite(pch, 1, nSize, file) != nSize)
             throw std::ios_base::failure("CAutoFile::write: write failed");
     }
@@ -539,7 +496,7 @@ public:
     {
         // Serialize to this stream
         if (!file)
-            throw std::ios_base::failure("CAutoFile::operator<<: file handle is nullptr");
+            throw std::ios_base::failure("CAutoFile::operator<<: file handle is NULL");
         ::Serialize(*this, obj);
         return (*this);
     }
@@ -549,7 +506,7 @@ public:
     {
         // Unserialize from this stream
         if (!file)
-            throw std::ios_base::failure("CAutoFile::operator>>: file handle is nullptr");
+            throw std::ios_base::failure("CAutoFile::operator>>: file handle is NULL");
         ::Unserialize(*this, obj);
         return (*this);
     }
@@ -588,11 +545,11 @@ protected:
             readNow = nAvail;
         if (readNow == 0)
             return false;
-        size_t nBytes = fread((void*)&vchBuf[pos], 1, readNow, src);
-        if (nBytes == 0) {
+        size_t read = fread((void*)&vchBuf[pos], 1, readNow, src);
+        if (read == 0) {
             throw std::ios_base::failure(feof(src) ? "CBufferedFile::Fill: end of file" : "CBufferedFile::Fill: fread failed");
         } else {
-            nSrcPos += nBytes;
+            nSrcPos += read;
             return true;
         }
     }
@@ -616,7 +573,7 @@ public:
     {
         if (src) {
             ::fclose(src);
-            src = nullptr;
+            src = NULL;
         }
     }
 

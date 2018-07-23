@@ -22,21 +22,17 @@ If you want to build the disk image with `make deploy` (.dmg / optional), you ne
 
     brew install librsvg
 
-If you want to build with ZeroMQ support
-    
-    brew install zeromq
-
-NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
+NOTE: Building with Qt4 is still supported, however, doing so could result in a broken UI. Therefore, building with Qt5 is recommended.
 
 Build Hostmasternode Core
 ------------------------
 
-1. Clone the hostmasternode source code and cd into `hostmasternode`
+1. Clone the Hostmasternode Core source code and cd into `hostmasternode`
 
-        git clone https://github.com/hostmasternodeproject/hostmasternode
+        git clone https://github.com/hostmasternodepay/hostmasternode
         cd hostmasternode
 
-2.  Build hostmasternode-core:
+2.  Build Hostmasternode Core:
 
     Configure and build the headless hostmasternode binaries as well as the GUI (if Qt is found).
 
@@ -61,15 +57,15 @@ Hostmasternode Core is now available at `./src/hostmasternoded`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=hostmasternoderpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Hostmasternode/hostmasternode.conf"
+    echo -e "rpcuser=hostmasternoderpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/HostmasternodeCore/hostmasternode.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/Hostmasternode/hostmasternode.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/HostmasternodeCore/hostmasternode.conf"
 
 The first time you run hostmasternoded, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/Hostmasternode/debug.log
+    tail -f $HOME/Library/Application\ Support/HostmasternodeCore/debug.log
 
 Other commands:
 -------

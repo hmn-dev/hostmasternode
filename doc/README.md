@@ -1,11 +1,7 @@
-Hostmasternode Core
-=============
+Hostmasternode Core 0.12.1
+=====================
 
-Setup
----------------------
-Hostmasternode Core is the original Hostmasternode client and it builds the backbone of the network. It downloads and, by default, stores the entire history of Hostmasternode transactions (which is currently more than 7 GBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
-
-To download Hostmasternode Core, visit [hostmasternode.com](https://hostmasternode.com).
+This is the official reference wallet for Hostmasternode digital currency and comprises the backbone of the Hostmasternode peer-to-peer network. You can [download Hostmasternode Core](https://www.hostmasternode.com/downloads/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
@@ -24,18 +20,18 @@ Unpack the files into a directory, and then run hostmasternode-qt.exe.
 
 ### OS X
 
-Drag Hostmasternode-Core to your applications folder, and then run Hostmasternode-Core.
+Drag Hostmasternode-Qt to your applications folder, and then run Hostmasternode-Qt.
 
 ### Need Help?
 
-* See the documentation at the [Hostmasternode Wiki](https://hostmasternode.info/)
+* See the [Hostmasternode documentation](https://hostmasternodepay.atlassian.net/wiki/display/DOC)
 for help and more information.
-* Ask for help on [#hostmasternode](http://webchat.freenode.net?channels=hostmasternode) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net?channels=hostmasternode).
-* Ask for help on the [HostmasternodeTalk](https://hostmasternodetalk.io/) forums.
+* Ask for help on [Hostmasternode Nation Discord](http://hostmasternodechat.org)
+* Ask for help on the [Hostmasternode Forum](https://hostmasternode.com/forum)
 
 Building
 ---------------------
-The following are developer notes on how to build Hostmasternode on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build Hostmasternode Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -45,12 +41,12 @@ The following are developer notes on how to build Hostmasternode on your native 
 
 Development
 ---------------------
-The Hostmasternode repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The Hostmasternode Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Release Notes](release-notes.md)
 - [Release Process](release-process.md)
-- [Source Code Documentation (External Link)](https://dev.visucore.com/hostmasternode/doxygen/)
+- Source Code Documentation ***TODO***
 - [Translation Process](translation_process.md)
 - [Translation Strings Policy](translation_strings_policy.md)
 - [Travis CI](travis-ci.md)
@@ -61,13 +57,12 @@ The Hostmasternode repo's [root README](/README.md) contains relevant informatio
 - [Benchmarking](benchmarking.md)
 
 ### Resources
-* Discuss on the [HostmasternodeTalk](https://hostmasternodetalk.io/) forums.
-* Discuss general Hostmasternode development on #hostmasternode-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=hostmasternode-dev).
+* Discuss on the [Hostmasternode Forum](https://hostmasternode.com/forum), in the Development & Technical Discussion board.
+* Discuss on [Hostmasternode Nation Discord](http://hostmasternodechat.org)
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)
 - [Files](files.md)
-- [Fuzz-testing](fuzzing.md)
 - [Reduce Traffic](reduce-traffic.md)
 - [Tor Support](tor.md)
 - [Init Scripts (systemd/upstart/openrc)](init.md)

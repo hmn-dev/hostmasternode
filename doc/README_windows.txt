@@ -1,5 +1,5 @@
-Hostmasternode Core
-=============
+Hostmasternode Core 0.12.1
+=====================
 
 Intro
 -----
@@ -19,5 +19,5 @@ depending on the speed of your computer and network connection, the synchronizat
 process can take anywhere from a few hours to a day or more.
 
 See the hostmasternode wiki at:
-  https://hostmasternode.info/
+  https://hostmasternodepay.atlassian.net/wiki/
 for more help and information.

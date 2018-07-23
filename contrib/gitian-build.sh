@@ -17,10 +17,11 @@ osx=true
 SIGNER=
 VERSION=
 commit=false
-url=https://github.com/hostmasternodeproject/hostmasternode
+url=https://github.com/hostmasternodepay/hostmasternode
 proc=2
 mem=2000
 lxc=true
+docker=false
 osslTarUrl=http://downloads.sourceforge.net/project/osslsigncode/osslsigncode/osslsigncode-1.7.1.tar.gz
 osslPatchUrl=https://bitcoincore.org/cfields/osslsigncode-Backports-to-1.7.1.patch
 scriptName=$(basename -- "$0")
@@ -31,7 +32,7 @@ commitFiles=true
 read -d '' usage <<- EOF
 Usage: $scriptName [-c|u|v|b|s|B|o|h|j|m|] signer version
 
-Run this script from the directory containing the hostmasternode, gitian-builder, gitian.sigs.ltc, and hostmasternode-detached-sigs.
+Run this script from the directory containing the hostmasternode, gitian-builder, gitian.sigs, and hostmasternode-detached-sigs.
 
 Arguments:
 signer          GPG signer to sign each build assert file
@@ -39,7 +40,7 @@ version		Version number, commit, or branch to build. If building a commit or bra
 
 Options:
 -c|--commit	Indicate that the version argument is for a commit or branch
--u|--url	Specify the URL of the repository. Default is https://github.com/hostmasternodeproject/hostmasternode
+-u|--url	Specify the URL of the repository. Default is https://github.com/hostmasternodepay/hostmasternode
 -v|--verify 	Verify the gitian build
 -b|--build	Do a gitian build
 -s|--sign	Make signed binaries for Windows and Mac OSX
@@ -47,8 +48,10 @@ Options:
 -o|--os		Specify which Operating Systems the build is for. Default is lwx. l for linux, w for windows, x for osx
 -j		Number of processes to use. Default 2
 -m		Memory to allocate in MiB. Default 2000
---kvm           Use KVM instead of LXC
---setup         Setup the gitian building environment. Uses KVM. If you want to use lxc, use the --lxc option. Only works on Debian-based systems (Ubuntu, Debian)
+--kvm           Use KVM
+--lxc           Use LXC
+--docker        Use Docker
+--setup         Setup the gitian building environment. Uses KVM. If you want to use lxc, use the --lxc option. If you want to use Docker, use --docker. Only works on Debian-based systems (Ubuntu, Debian)
 --detach-sign   Create the assert file for detached signing. Will not commit anything.
 --no-commit     Do not commit anything to git
 -h|--help	Print this help message
@@ -78,7 +81,7 @@ while :; do
         -S|--signer)
 	    if [ -n "$2" ]
 	    then
-		SIGNER=$2
+		SIGNER="$2"
 		shift
 	    else
 		echo 'Error: "--signer" requires a non-empty argument.'
@@ -153,8 +156,19 @@ while :; do
 	    fi
 	    ;;
         # kvm
+        --lxc)
+            lxc=true
+            docker=false
+            ;;
+        # kvm
         --kvm)
             lxc=false
+            docker=false
+            ;;
+        # docker
+        --docker)
+            lxc=false
+            docker=true
             ;;
         # Detach sign
         --detach-sign)
@@ -180,7 +194,10 @@ if [[ $lxc = true ]]
 then
     export USE_LXC=1
     export LXC_BRIDGE=lxcbr0
-    sudo ifconfig lxcbr0 up 10.0.2.2
+    sudo ifconfig lxcbr0 up 10.0.3.2
+elif [[ $docker = true ]]
+then
+    export USE_DOCKER=1
 fi
 
 # Check for OSX SDK
@@ -193,7 +210,7 @@ fi
 # Get signer
 if [[ -n"$1" ]]
 then
-    SIGNER=$1
+    SIGNER="$1"
     shift
 fi
 
@@ -206,7 +223,7 @@ then
 fi
 
 # Check that a signer is specified
-if [[ $SIGNER == "" ]]
+if [[ "$SIGNER" == "" ]]
 then
     echo "$scriptName: Missing signer."
     echo "Try $scriptName --help for more information"
@@ -232,14 +249,18 @@ echo ${COMMIT}
 if [[ $setup = true ]]
 then
     sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm qemu-utils
-    git clone https://github.com/hostmasternodeproject/gitian.sigs.ltc.git
-    git clone https://github.com/hostmasternodeproject/hostmasternode-detached-sigs.git
+    git clone https://github.com/hostmasternodepay/gitian.sigs.git
+    git clone https://github.com/hostmasternodepay/hostmasternode-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
     pushd ./gitian-builder
     if [[ -n "$USE_LXC" ]]
     then
         sudo apt-get install lxc
         bin/make-base-vm --suite trusty --arch amd64 --lxc
+    elif [[ -n "$USE_DOCKER" ]]
+    then
+        sudo apt-get install docker-ce
+        bin/make-base-vm --suite trusty --arch amd64 --docker
     else
         bin/make-base-vm --suite trusty --arch amd64
     fi
@@ -256,7 +277,7 @@ popd
 if [[ $build = true ]]
 then
 	# Make output folder
-	mkdir -p ./hostmasternode-binaries/${VERSION}
+	mkdir -p ./hostmasternodecore-binaries/${VERSION}
 	
 	# Build Dependencies
 	echo ""
@@ -275,8 +296,8 @@ then
 	    echo "Compiling ${VERSION} Linux"
 	    echo ""
 	    ./bin/gbuild -j ${proc} -m ${mem} --commit hostmasternode=${COMMIT} --url hostmasternode=${url} ../hostmasternode/contrib/gitian-descriptors/gitian-linux.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs.ltc/ ../hostmasternode/contrib/gitian-descriptors/gitian-linux.yml
-	    mv build/out/hostmasternode-*.tar.gz build/out/src/hostmasternode-*.tar.gz ../hostmasternode-binaries/${VERSION}
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../hostmasternode/contrib/gitian-descriptors/gitian-linux.yml
+	    mv build/out/hostmasternodecore-*.tar.gz build/out/src/hostmasternodecore-*.tar.gz ../hostmasternodecore-binaries/${VERSION}
 	fi
 	# Windows
 	if [[ $windows = true ]]
@@ -285,9 +306,9 @@ then
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
 	    ./bin/gbuild -j ${proc} -m ${mem} --commit hostmasternode=${COMMIT} --url hostmasternode=${url} ../hostmasternode/contrib/gitian-descriptors/gitian-win.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs.ltc/ ../hostmasternode/contrib/gitian-descriptors/gitian-win.yml
-	    mv build/out/hostmasternode-*-win-unsigned.tar.gz inputs/hostmasternode-win-unsigned.tar.gz
-	    mv build/out/hostmasternode-*.zip build/out/hostmasternode-*.exe ../hostmasternode-binaries/${VERSION}
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../hostmasternode/contrib/gitian-descriptors/gitian-win.yml
+	    mv build/out/hostmasternodecore-*-win-unsigned.tar.gz inputs/hostmasternodecore-win-unsigned.tar.gz
+	    mv build/out/hostmasternodecore-*.zip build/out/hostmasternodecore-*.exe ../hostmasternodecore-binaries/${VERSION}
 	fi
 	# Mac OSX
 	if [[ $osx = true ]]
@@ -296,9 +317,9 @@ then
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
 	    ./bin/gbuild -j ${proc} -m ${mem} --commit hostmasternode=${COMMIT} --url hostmasternode=${url} ../hostmasternode/contrib/gitian-descriptors/gitian-osx.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs.ltc/ ../hostmasternode/contrib/gitian-descriptors/gitian-osx.yml
-	    mv build/out/hostmasternode-*-osx-unsigned.tar.gz inputs/hostmasternode-osx-unsigned.tar.gz
-	    mv build/out/hostmasternode-*.tar.gz build/out/hostmasternode-*.dmg ../hostmasternode-binaries/${VERSION}
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../hostmasternode/contrib/gitian-descriptors/gitian-osx.yml
+	    mv build/out/hostmasternodecore-*-osx-unsigned.tar.gz inputs/hostmasternodecore-osx-unsigned.tar.gz
+	    mv build/out/hostmasternodecore-*.tar.gz build/out/hostmasternodecore-*.dmg ../hostmasternodecore-binaries/${VERSION}
 	fi
 	popd
 
@@ -309,9 +330,9 @@ then
             echo "Committing ${VERSION} Unsigned Sigs"
             echo ""
             pushd gitian.sigs
-            git add ${VERSION}-linux/${SIGNER}
-            git add ${VERSION}-win-unsigned/${SIGNER}
-            git add ${VERSION}-osx-unsigned/${SIGNER}
+            git add ${VERSION}-linux/"${SIGNER}"
+            git add ${VERSION}-win-unsigned/"${SIGNER}"
+            git add ${VERSION}-osx-unsigned/"${SIGNER}"
             git commit -a -m "Add ${VERSION} unsigned sigs for ${SIGNER}"
             popd
         fi
@@ -325,27 +346,27 @@ then
 	echo ""
 	echo "Verifying v${VERSION} Linux"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs.ltc/ -r ${VERSION}-linux ../hostmasternode/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../hostmasternode/contrib/gitian-descriptors/gitian-linux.yml
 	# Windows
 	echo ""
 	echo "Verifying v${VERSION} Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs.ltc/ -r ${VERSION}-win-unsigned ../hostmasternode/contrib/gitian-descriptors/gitian-win.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../hostmasternode/contrib/gitian-descriptors/gitian-win.yml
 	# Mac OSX	
 	echo ""
 	echo "Verifying v${VERSION} Mac OSX"
 	echo ""	
-	./bin/gverify -v -d ../gitian.sigs.ltc/ -r ${VERSION}-osx-unsigned ../hostmasternode/contrib/gitian-descriptors/gitian-osx.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../hostmasternode/contrib/gitian-descriptors/gitian-osx.yml
 	# Signed Windows
 	echo ""
 	echo "Verifying v${VERSION} Signed Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs.ltc/ -r ${VERSION}-osx-signed ../hostmasternode/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../hostmasternode/contrib/gitian-descriptors/gitian-osx-signer.yml
 	# Signed Mac OSX
 	echo ""
 	echo "Verifying v${VERSION} Signed Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs.ltc/ -r ${VERSION}-osx-signed ../hostmasternode/contrib/gitian-descriptors/gitian-osx-signer.yml	
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../hostmasternode/contrib/gitian-descriptors/gitian-osx-signer.yml
 	popd
 fi
 
@@ -361,9 +382,9 @@ then
 	    echo "Signing ${VERSION} Windows"
 	    echo ""
 	    ./bin/gbuild -i --commit signature=${COMMIT} ../hostmasternode/contrib/gitian-descriptors/gitian-win-signer.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs.ltc/ ../hostmasternode/contrib/gitian-descriptors/gitian-win-signer.yml
-	    mv build/out/hostmasternode-*win64-setup.exe ../hostmasternode-binaries/${VERSION}
-	    mv build/out/hostmasternode-*win32-setup.exe ../hostmasternode-binaries/${VERSION}
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../hostmasternode/contrib/gitian-descriptors/gitian-win-signer.yml
+	    mv build/out/hostmasternodecore-*win64-setup.exe ../hostmasternodecore-binaries/${VERSION}
+	    mv build/out/hostmasternodecore-*win32-setup.exe ../hostmasternodecore-binaries/${VERSION}
 	fi
 	# Sign Mac OSX
 	if [[ $osx = true ]]
@@ -372,8 +393,8 @@ then
 	    echo "Signing ${VERSION} Mac OSX"
 	    echo ""
 	    ./bin/gbuild -i --commit signature=${COMMIT} ../hostmasternode/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs.ltc/ ../hostmasternode/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    mv build/out/hostmasternode-osx-signed.dmg ../hostmasternode-binaries/${VERSION}/hostmasternode-${VERSION}-osx.dmg
+	    ./bin/gsign -p "$signProg" --signer "$SIGNER" --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../hostmasternode/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    mv build/out/hostmasternodecore-osx-signed.dmg ../hostmasternodecore-binaries/${VERSION}/hostmasternodecore-${VERSION}-osx.dmg
 	fi
 	popd
 
@@ -384,8 +405,8 @@ then
             echo ""
             echo "Committing ${VERSION} Signed Sigs"
             echo ""
-            git add ${VERSION}-win-signed/${SIGNER}
-            git add ${VERSION}-osx-signed/${SIGNER}
+            git add ${VERSION}-win-signed/"${SIGNER}"
+            git add ${VERSION}-osx-signed/"${SIGNER}"
             git commit -a -m "Add ${VERSION} signed binary sigs for ${SIGNER}"
             popd
         fi

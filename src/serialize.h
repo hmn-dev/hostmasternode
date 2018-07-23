@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <ios>
 #include <limits>
+#include <list>
 #include <map>
 #include <memory>
 #include <set>
@@ -77,6 +78,11 @@ template<typename Stream> inline void ser_writedata32(Stream &s, uint32_t obj)
     obj = htole32(obj);
     s.write((char*)&obj, 4);
 }
+template<typename Stream> inline void ser_writedata32be(Stream &s, uint32_t obj)
+{
+    obj = htobe32(obj);
+    s.write((char*)&obj, 4);
+}
 template<typename Stream> inline void ser_writedata64(Stream &s, uint64_t obj)
 {
     obj = htole64(obj);
@@ -99,6 +105,12 @@ template<typename Stream> inline uint32_t ser_readdata32(Stream &s)
     uint32_t obj;
     s.read((char*)&obj, 4);
     return le32toh(obj);
+}
+template<typename Stream> inline uint32_t ser_readdata32be(Stream &s)
+{
+    uint32_t obj;
+    s.read((char*)&obj, 4);
+    return be32toh(obj);
 }
 template<typename Stream> inline uint64_t ser_readdata64(Stream &s)
 {
@@ -336,18 +348,11 @@ I ReadVarInt(Stream& is)
     I n = 0;
     while(true) {
         unsigned char chData = ser_readdata8(is);
-        if (n > (std::numeric_limits<I>::max() >> 7)) {
-           throw std::ios_base::failure("ReadVarInt(): size too large");
-        }
         n = (n << 7) | (chData & 0x7F);
-        if (chData & 0x80) {
-            if (n == std::numeric_limits<I>::max()) {
-                throw std::ios_base::failure("ReadVarInt(): size too large");
-            }
+        if (chData & 0x80)
             n++;
-        } else {
+        else
             return n;
-        }
     }
 }
 
@@ -422,6 +427,10 @@ protected:
 public:
     CCompactSize(uint64_t& nIn) : n(nIn) { }
 
+    unsigned int GetSerializeSize() const {
+        return GetSizeOfCompactSize(n);
+    }
+
     template<typename Stream>
     void Serialize(Stream &s) const {
         WriteCompactSize<Stream>(s, n);
@@ -450,7 +459,7 @@ public:
         }
         string.resize(size);
         if (size != 0)
-            s.read((char*)string.data(), size);
+            s.read((char*)&string[0], size);
     }
 
     template<typename Stream>
@@ -458,7 +467,7 @@ public:
     {
         WriteCompactSize(s, string.size());
         if (!string.empty())
-            s.write((char*)string.data(), string.size());
+            s.write((char*)&string[0], string.size());
     }
 };
 
@@ -556,7 +565,7 @@ void Serialize(Stream& os, const std::basic_string<C>& str)
 {
     WriteCompactSize(os, str.size());
     if (!str.empty())
-        os.write((char*)str.data(), str.size() * sizeof(C));
+        os.write((char*)&str[0], str.size() * sizeof(str[0]));
 }
 
 template<typename Stream, typename C>
@@ -565,7 +574,7 @@ void Unserialize(Stream& is, std::basic_string<C>& str)
     unsigned int nSize = ReadCompactSize(is);
     str.resize(nSize);
     if (nSize != 0)
-        is.read((char*)str.data(), nSize * sizeof(C));
+        is.read((char*)&str[0], nSize * sizeof(str[0]));
 }
 
 
@@ -578,7 +587,7 @@ void Serialize_impl(Stream& os, const prevector<N, T>& v, const unsigned char&)
 {
     WriteCompactSize(os, v.size());
     if (!v.empty())
-        os.write((char*)v.data(), v.size() * sizeof(T));
+        os.write((char*)&v[0], v.size() * sizeof(T));
 }
 
 template<typename Stream, unsigned int N, typename T, typename V>
@@ -646,7 +655,7 @@ void Serialize_impl(Stream& os, const std::vector<T, A>& v, const unsigned char&
 {
     WriteCompactSize(os, v.size());
     if (!v.empty())
-        os.write((char*)v.data(), v.size() * sizeof(T));
+        os.write((char*)&v[0], v.size() * sizeof(T));
 }
 
 template<typename Stream, typename T, typename A, typename V>
@@ -774,6 +783,30 @@ void Unserialize(Stream& is, std::set<K, Pred, A>& m)
         K key;
         Unserialize(is, key);
         it = m.insert(it, key);
+    }
+}
+
+/**
+ * list
+ */
+template<typename Stream, typename T, typename A>
+void Serialize(Stream& os, const std::list<T, A>& l)
+{
+    WriteCompactSize(os, l.size());
+    for (typename std::list<T, A>::const_iterator it = l.begin(); it != l.end(); ++it)
+        Serialize(os, (*it));
+}
+
+template<typename Stream, typename T, typename A>
+void Unserialize(Stream& is, std::list<T, A>& l)
+{
+    l.clear();
+    unsigned int nSize = ReadCompactSize(is);
+    for (unsigned int i = 0; i < nSize; i++)
+    {
+        T val;
+        Unserialize(is, val);
+        l.push_back(val);
     }
 }
 

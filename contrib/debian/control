@@ -1,8 +1,8 @@
-Source: bitcoin
+Source: hostmasternode
 Section: utils
 Priority: optional
-Maintainer: Matt Corallo <matt@mattcorallo.com>
-Uploaders: Matt Corallo <matt@mattcorallo.com>
+Maintainer: Holger Schinzel <holger@hostmasternode.com>
+Uploaders: Holger Schinzel <holger@hostmasternode.com>
 Build-Depends: debhelper,
  devscripts,
  automake,
@@ -26,45 +26,45 @@ Build-Depends: debhelper,
  python,
  libzmq3-dev
 Standards-Version: 3.9.2
-Homepage: https://bitcoincore.org/
-Vcs-Git: git://github.com/bitcoin/bitcoin.git
-Vcs-Browser: https://github.com/bitcoin/bitcoin
+Homepage: https://www.hostmasternode.com/
+Vcs-Git: git://github.com/hostmasternodepay/hostmasternode.git
+Vcs-Browser: https://github.com/hostmasternodepay/hostmasternode
 
-Package: bitcoind
+Package: hostmasternoded
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
- Bitcoin is a free open source peer-to-peer electronic cash system that
- is completely decentralized, without the need for a central server or
- trusted parties.  Users hold the crypto keys to their own money and
- transact directly with each other, with the help of a P2P network to
- check for double-spending.
+ Hostmasternode is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. Hostmasternode uses peer-to-peer
+ technology to operate with no central authority: managing transactions
+ and issuing money are carried out collectively by the network. Hostmasternode Core
+ is the name of the open source software which enables the use of this currency.
  .
- This package provides the daemon, bitcoind, and the CLI tool
- bitcoin-cli to interact with the daemon.
+ This package provides the daemon, hostmasternoded, and the CLI tool
+ hostmasternode-cli to interact with the daemon.
 
-Package: bitcoin-qt
+Package: hostmasternode-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
- Bitcoin is a free open source peer-to-peer electronic cash system that
- is completely decentralized, without the need for a central server or
- trusted parties.  Users hold the crypto keys to their own money and
- transact directly with each other, with the help of a P2P network to
- check for double-spending.
+ Hostmasternode is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. Hostmasternode uses peer-to-peer
+ technology to operate with no central authority: managing transactions
+ and issuing money are carried out collectively by the network. Hostmasternode Core
+ is the name of the open source software which enables the use of this currency.
  .
- This package provides Bitcoin-Qt, a GUI for Bitcoin based on Qt.
+ This package provides Hostmasternode-Qt, a GUI for Hostmasternode based on Qt.
 
-Package: bitcoin-tx
+Package: hostmasternode-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
- Bitcoin is a free open source peer-to-peer electronic cash system that
- is completely decentralized, without the need for a central server or
- trusted parties.  Users hold the crypto keys to their own money and
- transact directly with each other, with the help of a P2P network to
- check for double-spending.
+ Hostmasternode is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. Hostmasternode uses peer-to-peer
+ technology to operate with no central authority: managing transactions
+ and issuing money are carried out collectively by the network. Hostmasternode Core
+ is the name of the open source software which enables the use of this currency.
  .
- This package provides bitcoin-tx, a command-line transaction creation
- tool which can be used without a bitcoin daemon.  Some means of
+ This package provides hostmasternode-tx, a command-line transaction creation
+ tool which can be used without a hostmasternode daemon.  Some means of
  exchanging minimal transaction data with peers is still required.
