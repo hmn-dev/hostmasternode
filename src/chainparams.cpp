@@ -123,138 +123,137 @@ static CBlock FindDevNetGenesisBlock(const Consensus::Params& params, const CBlo
 class CMainParams : public CChainParams {
 public:
     CMainParams() {
-    	  strNetworkID = "main";
+    	strNetworkID = "main";
 
-    	  		/*bool fNegative;
-    	  		bool fOverflow;
-    	  		uint32_t i=0;
-    	  		*/
+    	    	  		/*bool fNegative;
+    	    	  		bool fOverflow;
+    	    	  		uint32_t i=0;
+    	    	  		*/
 
-    		genesis = CreateGenesisBlock(1532004360,2310185, 0x1e0ffff0, 1, 20 * COIN);
+    	    		genesis = CreateGenesisBlock(1532004360,2310185, 0x1e0ffff0, 1, 20 * COIN);
 
-    			/*while (true) {
-    					genesis = CreateGenesisBlock(1532004360,++i, 0x1e0ffff0, 1, 20 * COIN);
-    				arith_uint256 bnTarget;
+    	    			/*while (true) {
+    	    					genesis = CreateGenesisBlock(1532004360,++i, 0x1e0ffff0, 1, 20 * COIN);
+    	    				arith_uint256 bnTarget;
 
-    				bnTarget.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
-    			if (UintToArith256(genesis.GetHash()) > bnTarget) {
-    				//	std::cout << " nonce not correct  \n";
-    					std::cout << i << " ";
-    				}
-    				else {
-    					std::cout << " nonce found  " << i << "\n";
-    					std::cout << " genesis found  " <<  genesis.GetHash().ToString() << "\n";
+    	    				bnTarget.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
+    	    			if (UintToArith256(genesis.GetHash()) > bnTarget) {
+    	    				//	std::cout << " nonce not correct  \n";
+    	    					std::cout << i << " ";
+    	    				}
+    	    				else {
+    	    					std::cout << " nonce found  " << i << "\n";
+    	    					std::cout << " genesis found  " <<  genesis.GetHash().ToString() << "\n";
 
-    							break;
-    				}
-    				}
-    				*/
-    	        consensus.nSubsidyHalvingInterval = 1051200;
-    	        consensus.nMasternodePaymentsStartBlock = 240;
-    	        consensus.nMasternodePaymentsIncreaseBlock = 350;
-    	        consensus.nMasternodePaymentsIncreasePeriod = 10;
-    	        consensus.nInstantSendConfirmationsRequired = 2;
-    	        consensus.nInstantSendKeepLock = 6;
-    	        consensus.nBudgetPaymentsStartBlock = 1000;
-    	        consensus.nBudgetPaymentsCycleBlocks = 50;
-    	        consensus.nBudgetPaymentsWindowBlocks = 10;
-    	        consensus.nSuperblockStartBlock = 1500;
-    	        consensus.nSuperblockStartHash = uint256(); // do not check this on regtest
-    	        consensus.nSuperblockCycle = 10;
-    	        consensus.nGovernanceMinQuorum = 1;
-    	        consensus.nGovernanceFilterElements = 100;
-    	        consensus.nMasternodeMinimumConfirmations = 1;
-    	        consensus.BIP34Height = 0; // BIP34 has not activated on regtest (far in the future so block v1 are not rejected in tests)
-    	        consensus.BIP34Hash = uint256();
-    	        consensus.BIP65Height = -1; // BIP65 activated on regtest (Used in rpc activation tests)
-    	        consensus.BIP66Height = -1; // BIP66 activated on regtest (Used in rpc activation tests)
-    	        consensus.DIP0001Height = 2000;
-    	        consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-    	        consensus.nPowTargetTimespan = 24 * 60 * 60; // Hostmasternode: 1 day
-    	        consensus.nPowTargetSpacing = 2 * 60; // Hostmasternode: 2.5 minutes
-    	        consensus.fPowAllowMinDifficultyBlocks = false;
-    	        consensus.fPowNoRetargeting = false;
-    	        consensus.nPowKGWHeight = 15200; // same as mainnet
-    	        consensus.nPowDGWHeight = 34140; // same as mainnet
-    	        consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
-    	        consensus.nMinerConfirmationWindow = 144; // Faster than normal for regtest (144 instead of 2016)
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1531990480972;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1563490800000;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].bit = 1;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nStartTime = 1531990480972;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nTimeout = 1531990480972;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].bit = 2;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nStartTime = 1531990480972;
-    	        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nTimeout =1531990480972 ;
+    	    							break;
+    	    				}
+    	    				}
+    	    				*/
+    	    	        consensus.nSubsidyHalvingInterval = 1051200;
+    	    	        consensus.nMasternodePaymentsStartBlock = 240;
+    	    	        consensus.nMasternodePaymentsIncreaseBlock = 350;
+    	    	        consensus.nMasternodePaymentsIncreasePeriod = 10;
+    	    	        consensus.nInstantSendConfirmationsRequired = 2;
+    	    	        consensus.nInstantSendKeepLock = 6;
+    	    	        consensus.nBudgetPaymentsStartBlock = 1000;
+    	    	        consensus.nBudgetPaymentsCycleBlocks = 50;
+    	    	        consensus.nBudgetPaymentsWindowBlocks = 10;
+    	    	        consensus.nSuperblockStartBlock = 1500;
+    	    	        consensus.nSuperblockStartHash = uint256(); // do not check this on regtest
+    	    	        consensus.nSuperblockCycle = 10;
+    	    	        consensus.nGovernanceMinQuorum = 1;
+    	    	        consensus.nGovernanceFilterElements = 100;
+    	    	        consensus.nMasternodeMinimumConfirmations = 1;
+    	    	        consensus.BIP34Height = 0; // BIP34 has not activated on regtest (far in the future so block v1 are not rejected in tests)
+    	    	        consensus.BIP34Hash = uint256();
+    	    	        consensus.BIP65Height = -1; // BIP65 activated on regtest (Used in rpc activation tests)
+    	    	        consensus.BIP66Height = -1; // BIP66 activated on regtest (Used in rpc activation tests)
+    	    	        consensus.DIP0001Height = 2000;
+    	    	        consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
+    	    	        consensus.nPowTargetTimespan = 24 * 60 * 60; // Hostmasternode: 1 day
+    	    	        consensus.nPowTargetSpacing = 2 * 60; // Hostmasternode: 2.5 minutes
+    	    	        consensus.fPowAllowMinDifficultyBlocks = false;
+    	    	        consensus.fPowNoRetargeting = false;
+    	    	        consensus.nPowKGWHeight = 15200; // same as mainnet
+    	    	        consensus.nPowDGWHeight = 34140; // same as mainnet
+    	    	        consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
+    	    	        consensus.nMinerConfirmationWindow = 144; // Faster than normal for regtest (144 instead of 2016)
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1531990480972;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1563490800000;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].bit = 1;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nStartTime = 1531990480972;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nTimeout = 1531990480972;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].bit = 2;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nStartTime = 1531990480972;
+    	    	        consensus.vDeployments[Consensus::DEPLOYMENT_BIP147].nTimeout =1531990480972 ;
 
-    	        // The best chain should have at least this much work.
-    	        consensus.nMinimumChainWork = uint256S("0x00");
+    	    	        // The best chain should have at least this much work.
+    	    	        consensus.nMinimumChainWork = uint256S("0x00");
 
-    	        // By default assume that the signatures in ancestors of this block are valid.
-    	        consensus.defaultAssumeValid = uint256S("0x00");
+    	    	        // By default assume that the signatures in ancestors of this block are valid.
+    	    	        consensus.defaultAssumeValid = uint256S("0x00");
 
-    	        pchMessageStart[0] = 0xfc;
-    	        pchMessageStart[1] = 0xc1;
-    	        pchMessageStart[2] = 0xb7;
-    	        pchMessageStart[3] = 0xdc;
-    	        nDefaultPort = 8232;
-    	        nPruneAfterHeight = 1000;
+    	    	        pchMessageStart[0] = 0xfc;
+    	    	        pchMessageStart[1] = 0xc1;
+    	    	        pchMessageStart[2] = 0xb7;
+    	    	        pchMessageStart[3] = 0xdc;
+    	    	        nDefaultPort = 8232;
+    	    	        nPruneAfterHeight = 1000;
 
-    	        //genesis = CreateGenesisBlock(1417713337, 1096447, 0x207fffff, 1, 50 * COIN);
-    	        consensus.hashGenesisBlock = genesis.GetHash();
-    	        std::cout << "regtest genesis is : " << genesis.GetHash().ToString() << " \n";
-    	        assert(
-    	        				consensus.hashGenesisBlock
-    	        						== uint256S("0000049cb89513327e2812cf1d70b769f292ef0bfd86ae68dc55c2ef20819e7a"));
-    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.info", "dnsseed.hmncoin.info"));
-    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.net", "dnsseed.hmncoin.net"));
-    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.org", "dnsseed.hmncoin.org"));
-    	      //  assert(consensus.hashGenesisBlock == uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e"));
-    	      //  assert(genesis.hashMerkleRoot == uint256S("0xe0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7"));
+    	    	        //genesis = CreateGenesisBlock(1417713337, 1096447, 0x207fffff, 1, 50 * COIN);
+    	    	        consensus.hashGenesisBlock = genesis.GetHash();
+    	    	        std::cout << "regtest genesis is : " << genesis.GetHash().ToString() << " \n";
+    	    	        assert(
+    	    	        				consensus.hashGenesisBlock
+    	    	        						== uint256S("0000049cb89513327e2812cf1d70b769f292ef0bfd86ae68dc55c2ef20819e7a"));
+    	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.info", "dnsseed.hmncoin.info"));
+    	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.net", "dnsseed.hmncoin.net"));
+    	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.org", "dnsseed.hmncoin.org"));
+    	    	      //  assert(consensus.hashGenesisBlock == uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e"));
+    	    	      //  assert(genesis.hashMerkleRoot == uint256S("0xe0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7"));
 
-    	        vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
-    	        vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
+    	    	        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
-    	        fMiningRequiresPeers = false;
-    	        fDefaultConsistencyChecks = true;
-    	        fRequireStandard = false;
-    	        fMineBlocksOnDemand = true;
-    	        fAllowMultipleAddressesFromGroup = true;
-    	        fAllowMultiplePorts = true;
+    	    	       fMiningRequiresPeers = true;
+    	    	        fDefaultConsistencyChecks = false;
+    	    	        fRequireStandard = true;
+    	    	        fMineBlocksOnDemand = false;
+    	    	        fAllowMultipleAddressesFromGroup = false;
+    	    	         fAllowMultiplePorts = false;
 
-    	        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
+    	    	        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
 
-    	        // privKey: cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
-    	        strSporkAddress = "yj949n1UH6fDhw6HtVE5VMj2iSTaSWBMcW";
+    	    	        // privKey: cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
+    	    	        strSporkAddress = "yj949n1UH6fDhw6HtVE5VMj2iSTaSWBMcW";
 
-    	        checkpointData = (CCheckpointData){
-    	            boost::assign::map_list_of
-    	            ( 0, uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e"))
-    	        };
+    	    	        checkpointData = (CCheckpointData){
+    	    	            boost::assign::map_list_of
+    	    	            ( 0, uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e"))
+    	    	        };
 
-    	        chainTxData = ChainTxData{
-    	            0,
-    	            0,
-    	            0
-    	        };
+    	    	        chainTxData = ChainTxData{
+    	    	            0,
+    	    	            0,
+    	    	            0
+    	    	        };
 
-    	        // Regtest Hostmasternode addresses start with 'y'
-    	        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-    	        // Regtest Hostmasternode script addresses start with '8' or '9'
-    	        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
-    	        // Regtest private keys start with '9' or 'c' (Bitcoin defaults)
-    	        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-    	        // Regtest Hostmasternode BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
-    	        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-    	        // Regtest Hostmasternode BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
-    	        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
+    	    	        // Regtest Hostmasternode addresses start with 'y'
+    	    	        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
+    	    	        // Regtest Hostmasternode script addresses start with '8' or '9'
+    	    	        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
+    	    	        // Regtest private keys start with '9' or 'c' (Bitcoin defaults)
+    	    	        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+    	    	        // Regtest Hostmasternode BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+    	    	        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
+    	    	        // Regtest Hostmasternode BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+    	    	        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-    	        // Regtest Hostmasternode BIP44 coin type is '1' (All coin's testnet default)
-    	        nExtCoinType = 1;
+    	    	        // Regtest Hostmasternode BIP44 coin type is '1' (All coin's testnet default)
+    	    	        nExtCoinType = 1;
     }
 
 };
