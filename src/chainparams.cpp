@@ -228,7 +228,7 @@ public:
     	    	        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
 
     	    	        // privKey: cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
-    	    	        strSporkAddress = "yj949n1UH6fDhw6HtVE5VMj2iSTaSWBMcW";
+    	    	        strSporkAddress = "hMKtp2ZvzQuQYPRoJ8Lo57YQygcQP95Ug4";
 
     	    	        checkpointData = (CCheckpointData){
     	    	            boost::assign::map_list_of
@@ -242,11 +242,14 @@ public:
     	    	        };
 
     	    	        // Regtest Hostmasternode addresses start with 'y'
-    	    	        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
+    	    	       // std::cout<< "test :" << base58Prefixes[PUBKEY_ADDRESS] ;
+    	    	        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,100);
     	    	        // Regtest Hostmasternode script addresses start with '8' or '9'
     	    	        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
+
+
     	    	        // Regtest private keys start with '9' or 'c' (Bitcoin defaults)
-    	    	        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+    	    	        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,108);
     	    	        // Regtest Hostmasternode BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
     	    	        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
     	    	        // Regtest Hostmasternode BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
