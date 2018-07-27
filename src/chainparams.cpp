@@ -206,7 +206,6 @@ public:
 
     	    	        //genesis = CreateGenesisBlock(1417713337, 1096447, 0x207fffff, 1, 50 * COIN);
     	    	        consensus.hashGenesisBlock = genesis.GetHash();
-    	    	        std::cout << "regtest genesis is : " << genesis.GetHash().ToString() << " \n";
     	    	        assert(
     	    	        				consensus.hashGenesisBlock
     	    	        						== uint256S("0000049cb89513327e2812cf1d70b769f292ef0bfd86ae68dc55c2ef20819e7a"));
@@ -227,8 +226,8 @@ public:
 
     	    	        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
 
-    	    	        // privKey: cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
-    	    	        strSporkAddress = "hMKtp2ZvzQuQYPRoJ8Lo57YQygcQP95Ug4";
+    	    	        // privKey: H1hgP7QS52vQeLk5oCjD2T1Dj3emCeRTz2gBkTcVAnANKWoVRxpj
+    	    	        strSporkAddress = "hRTnoz11USP3PNT1NSXnmZeFMKmzs4ETLc";
 
     	    	        checkpointData = (CCheckpointData){
     	    	            boost::assign::map_list_of
@@ -241,21 +240,21 @@ public:
     	    	            0
     	    	        };
 
-    	    	        // Regtest Hostmasternode addresses start with 'y'
+    	    	        //  Hostmasternode addresses start with 'h'
     	    	       // std::cout<< "test :" << base58Prefixes[PUBKEY_ADDRESS] ;
     	    	        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,100);
-    	    	        // Regtest Hostmasternode script addresses start with '8' or '9'
+    	    	        //  Hostmasternode script addresses start with '8' or '9'
     	    	        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
 
 
-    	    	        // Regtest private keys start with '9' or 'c' (Bitcoin defaults)
+    	    	        //  private keys start with 'H'
     	    	        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,108);
-    	    	        // Regtest Hostmasternode BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+    	    	        //  Hostmasternode BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
     	    	        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
-    	    	        // Regtest Hostmasternode BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+    	    	        //  Hostmasternode BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
     	    	        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
-    	    	        // Regtest Hostmasternode BIP44 coin type is '1' (All coin's testnet default)
+    	    	        //  Hostmasternode BIP44 coin type is '1' (All coin's testnet default)
     	    	        nExtCoinType = 1;
     }
 
@@ -338,7 +337,6 @@ public:
         genesis = CreateGenesisBlock(1390666206UL, 3861367235UL, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        std::cout << "testnet genesis is : " << genesis.GetHash().ToString() << " \n";
 
         //assert(consensus.hashGenesisBlock == uint256S("0x00000bafbc94add76cb75e2ec92894837288a481e5c005f6563d91623bf8bc2c"));
         //assert(genesis.hashMerkleRoot == uint256S("0xe0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7"));
@@ -469,7 +467,6 @@ public:
 
         genesis = CreateGenesisBlock(1417713337, 1096447, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        std::cout << "devnet genesis is : " << genesis.GetHash().ToString() << " \n";
 
 
      //   assert(consensus.hashGenesisBlock == uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e"));
