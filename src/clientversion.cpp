@@ -67,20 +67,31 @@ const std::string CLIENT_NAME("Hostmasternode Core");
 #endif
 #endif
 
-const std::string CLIENT_BUILD(BUILD_DESC CLIENT_VERSION_SUFFIX);
+const std::string CLIENT_BUILD("1.0.0");
 
 std::string FormatVersion(int nVersion)
 {
     if (nVersion % 100 == 0)
+
+
         return strprintf("%d.%d.%d", nVersion / 1000000, (nVersion / 10000) % 100, (nVersion / 100) % 100);
+
     else
+
         return strprintf("%d.%d.%d.%d", nVersion / 1000000, (nVersion / 10000) % 100, (nVersion / 100) % 100, nVersion % 100);
+
 }
 
 std::string FormatFullVersion()
 {
-    return CLIENT_BUILD;
+
+
+   return CLIENT_BUILD;
+
+
+
 }
+
 
 /** 
  * Format the subversion field according to BIP 14 spec (https://github.com/bitcoin/bips/blob/master/bip-0014.mediawiki) 
@@ -99,5 +110,8 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
         ss << ")";
     }
     ss << "/";
+
     return ss.str();
+
+
 }
