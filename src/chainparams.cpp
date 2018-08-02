@@ -150,7 +150,7 @@ public:
     	    				}
     	    				*/
     	    	        consensus.nSubsidyHalvingInterval = 1051200;
-    	    	        consensus.nMasternodePaymentsStartBlock = 240;
+    	    	        consensus.nMasternodePaymentsStartBlock = 100;//262800;
     	    	        consensus.nMasternodePaymentsIncreaseBlock = 350;
     	    	        consensus.nMasternodePaymentsIncreasePeriod = 10;
     	    	        consensus.nInstantSendConfirmationsRequired = 2;
