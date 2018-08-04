@@ -1288,6 +1288,8 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
 CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
 	{
 
+	 if (nPrevBits < 262800)
+		 return 10 * COIN;
 		int i = 0;
 		    int halvings = nPrevHeight / consensusParams.nSubsidyHalvingInterval;
 		    // Force block reward to zero when right shift is undefined.

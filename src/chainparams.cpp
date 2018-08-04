@@ -125,32 +125,32 @@ public:
     CMainParams() {
     	strNetworkID = "main";
 
-    	    	  		/*bool fNegative;
-    	    	  		bool fOverflow;
-    	    	  		uint32_t i=0;
-    	    	  		*/
+//    	    	  		bool fNegative;
+//    	    	  		bool fOverflow;
+//    	    	  		uint32_t i=0;
 
-    	    		genesis = CreateGenesisBlock(1532004360,2310185, 0x1e0ffff0, 1, 20 * COIN);
 
-    	    			/*while (true) {
-    	    					genesis = CreateGenesisBlock(1532004360,++i, 0x1e0ffff0, 1, 20 * COIN);
-    	    				arith_uint256 bnTarget;
+    	    		genesis = CreateGenesisBlock(1533392424,511060, 0x1e0ffff0, 1, 20 * COIN);
 
-    	    				bnTarget.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
-    	    			if (UintToArith256(genesis.GetHash()) > bnTarget) {
-    	    				//	std::cout << " nonce not correct  \n";
-    	    					std::cout << i << " ";
-    	    				}
-    	    				else {
-    	    					std::cout << " nonce found  " << i << "\n";
-    	    					std::cout << " genesis found  " <<  genesis.GetHash().ToString() << "\n";
+//    	    			while (true) {
+//    	    					genesis = CreateGenesisBlock(1533392424,++i, 0x1e0ffff0, 1, 20 * COIN);
+//    	    				arith_uint256 bnTarget;
+//
+//    	    				bnTarget.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
+//    	    			if (UintToArith256(genesis.GetHash()) > bnTarget) {
+//    	    				//	std::cout << " nonce not correct  \n";
+//    	    					std::cout << i << " ";
+//    	    				}
+//    	    				else {
+//    	    					std::cout << " nonce found  " << i << "\n";
+//    	    					std::cout << " genesis found  " <<  genesis.GetHash().ToString() << "\n";
+//
+//    	    							exit(-1);
+//    	    				}
+//    	    				}
 
-    	    							break;
-    	    				}
-    	    				}
-    	    				*/
     	    	        consensus.nSubsidyHalvingInterval = 1051200;
-    	    	        consensus.nMasternodePaymentsStartBlock = 100;//262800;
+    	    	        consensus.nMasternodePaymentsStartBlock = 240;//262800;
     	    	        consensus.nMasternodePaymentsIncreaseBlock = 350;
     	    	        consensus.nMasternodePaymentsIncreasePeriod = 10;
     	    	        consensus.nInstantSendConfirmationsRequired = 2;
@@ -158,7 +158,7 @@ public:
     	    	        consensus.nBudgetPaymentsStartBlock = 1000;
     	    	        consensus.nBudgetPaymentsCycleBlocks = 50;
     	    	        consensus.nBudgetPaymentsWindowBlocks = 10;
-    	    	        consensus.nSuperblockStartBlock = 1500;
+    	    	        consensus.nSuperblockStartBlock = 262800;
     	    	        consensus.nSuperblockStartHash = uint256(); // do not check this on regtest
     	    	        consensus.nSuperblockCycle = 10;
     	    	        consensus.nGovernanceMinQuorum = 1;
@@ -208,7 +208,7 @@ public:
     	    	        consensus.hashGenesisBlock = genesis.GetHash();
     	    	        assert(
     	    	        				consensus.hashGenesisBlock
-    	    	        						== uint256S("0000049cb89513327e2812cf1d70b769f292ef0bfd86ae68dc55c2ef20819e7a"));
+    	    	        						== uint256S("00000a92ca28e46816f91f56a1000c7ba5de3d9c9615d2ee4f74d8c7c1231832"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.info", "dnsseed.hmncoin.info"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.net", "dnsseed.hmncoin.net"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.org", "dnsseed.hmncoin.org"));
