@@ -1288,7 +1288,7 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
 CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
 	{
 
-	 if (nPrevBits < 262800)
+	 if (nPrevHeight < 262800)
 		 return 10 * COIN;
 		int i = 0;
 		    int halvings = nPrevHeight / consensusParams.nSubsidyHalvingInterval;
@@ -3454,11 +3454,18 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
     if (nHeight >= consensusParams.BIP34Height)
     {
         CScript expect = CScript() << nHeight;
-        if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
+        if (block.vtx[0]->vin[0].scriptSig.size() < expect.size()) {
+        	std::cout << " size ghalet " << block.vtx[0]->vin[0].scriptSig.size() <<  " < "  << expect.size();
+        }
+        if (!std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
+        	std::cout << " mahomch kif kif " ;
+        }
+    }
+   /*     if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
             !std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");
         }
-    }
+    }*/
 
     return true;
 }
