@@ -130,10 +130,10 @@ public:
 //    	    	  		uint32_t i=0;
 
 
-    	    		genesis = CreateGenesisBlock(1533392424,511060, 0x1e0ffff0, 1, 20 * COIN);
+    	    		genesis = CreateGenesisBlock(1533392425,496471, 0x1e0ffff0, 1, 20 * COIN);
 
 //    	    			while (true) {
-//    	    					genesis = CreateGenesisBlock(1533392424,++i, 0x1e0ffff0, 1, 20 * COIN);
+//    	    					genesis = CreateGenesisBlock(1533392425,++i, 0x1e0ffff0, 1, 20 * COIN);
 //    	    				arith_uint256 bnTarget;
 //
 //    	    				bnTarget.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
@@ -208,7 +208,7 @@ public:
     	    	        consensus.hashGenesisBlock = genesis.GetHash();
     	    	        assert(
     	    	        				consensus.hashGenesisBlock
-    	    	        						== uint256S("00000a92ca28e46816f91f56a1000c7ba5de3d9c9615d2ee4f74d8c7c1231832"));
+    	    	        						== uint256S("00000c05d924400ffb8fb20fc717f5795ebfa647357c6a967b3f988717c033c3"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.info", "dnsseed.hmncoin.info"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.net", "dnsseed.hmncoin.net"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.org", "dnsseed.hmncoin.org"));
