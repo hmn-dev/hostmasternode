@@ -159,13 +159,13 @@ public:
     	    	        consensus.nBudgetPaymentsCycleBlocks = 50;
     	    	        consensus.nBudgetPaymentsWindowBlocks = 10;
     	    	        consensus.nSuperblockStartBlock = 11424;
-    	    	        consensus.nSuperblockStartHash = uint256("0000000000983643e8d87b579b8bfbbd514077762a32451fa70279c2a2094c4b");
+    	    	        consensus.nSuperblockStartHash = uint256S("0000000000983643e8d87b579b8bfbbd514077762a32451fa70279c2a2094c4b");
     	    	        consensus.nSuperblockCycle = 10;
     	    	        consensus.nGovernanceMinQuorum = 1;
     	    	        consensus.nGovernanceFilterElements = 100;
     	    	        consensus.nMasternodeMinimumConfirmations = 1;
     	    	        consensus.BIP34Height = 11424; //
-    	    	        consensus.BIP34Hash = uint256("0000000000983643e8d87b579b8bfbbd514077762a32451fa70279c2a2094c4b");
+    	    	        consensus.BIP34Hash = uint256S("0000000000983643e8d87b579b8bfbbd514077762a32451fa70279c2a2094c4b");
     	    	        consensus.BIP65Height = -1; // BIP65 activated on regtest (Used in rpc activation tests)
     	    	        consensus.BIP66Height = -1; // BIP66 activated on regtest (Used in rpc activation tests)
     	    	        consensus.DIP0001Height = 2000;
