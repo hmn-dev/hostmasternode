@@ -158,8 +158,8 @@ public:
     	    	        consensus.nBudgetPaymentsStartBlock = 1000;
     	    	        consensus.nBudgetPaymentsCycleBlocks = 50;
     	    	        consensus.nBudgetPaymentsWindowBlocks = 10;
-    	    	        consensus.nSuperblockStartBlock = 11424;
-    	    	        consensus.nSuperblockStartHash = uint256S("0000000000983643e8d87b579b8bfbbd514077762a32451fa70279c2a2094c4b");
+    	    	        consensus.nSuperblockStartBlock = 11425;
+    	    	        consensus.nSuperblockStartHash = uint256();
     	    	        consensus.nSuperblockCycle = 10;
     	    	        consensus.nGovernanceMinQuorum = 1;
     	    	        consensus.nGovernanceFilterElements = 100;
