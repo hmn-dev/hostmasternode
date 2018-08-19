@@ -158,14 +158,14 @@ public:
     	    	        consensus.nBudgetPaymentsStartBlock = 1000;
     	    	        consensus.nBudgetPaymentsCycleBlocks = 50;
     	    	        consensus.nBudgetPaymentsWindowBlocks = 10;
-    	    	        consensus.nSuperblockStartBlock = 262800;
-    	    	        consensus.nSuperblockStartHash = uint256(); // do not check this on regtest
+    	    	        consensus.nSuperblockStartBlock = 11425;
+    	    	        consensus.nSuperblockStartHash = uint256();
     	    	        consensus.nSuperblockCycle = 10;
     	    	        consensus.nGovernanceMinQuorum = 1;
     	    	        consensus.nGovernanceFilterElements = 100;
     	    	        consensus.nMasternodeMinimumConfirmations = 1;
-    	    	        consensus.BIP34Height = 0; // BIP34 has not activated on regtest (far in the future so block v1 are not rejected in tests)
-    	    	        consensus.BIP34Hash = uint256();
+    	    	        consensus.BIP34Height = 0; //
+    	    	        consensus.BIP34Hash = uint256S("0000000000983643e8d87b579b8bfbbd514077762a32451fa70279c2a2094c4b");
     	    	        consensus.BIP65Height = -1; // BIP65 activated on regtest (Used in rpc activation tests)
     	    	        consensus.BIP66Height = -1; // BIP66 activated on regtest (Used in rpc activation tests)
     	    	        consensus.DIP0001Height = 2000;
@@ -284,7 +284,7 @@ public:
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
         consensus.BIP34Height = 76;
-        consensus.BIP34Hash = uint256S("0x000008ebb1db2598e897d17275285767717c6acfeac4c73def49fbea1ddcbcb6");
+        consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 2431; // 0000039cf01242c7f921dcb4806a5994bc003b48c1973ae0c89b67809c2bb2ab
         consensus.BIP66Height = 2075; // 0000002acdd29a14583540cb72e1c5cc83783560e38fa7081495d474fe1671f7
         consensus.DIP0001Height = 5500;
