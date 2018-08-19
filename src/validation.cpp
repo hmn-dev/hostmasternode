@@ -1288,21 +1288,27 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
 CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
 	{
 
-	 if (nPrevHeight < 262800)
-		 return 10 * COIN;
-		int i = 0;
-		    int halvings = nPrevHeight / consensusParams.nSubsidyHalvingInterval;
+	 if (nPrevHeight <= 100) {
+		 return 4200 * COIN;
+	 }
+	 if (  (nPrevHeight > 100)   && (nPrevHeight <= 1051200)) {
+		 return 10 *COIN;
+	 }
+
+
+	 int i = 0;
+     int halvings = nPrevHeight / consensusParams.nSubsidyHalvingInterval;
 		    // Force block reward to zero when right shift is undefined.
-		    if (halvings >= 64)
-		        return 0;
+     if (halvings >= 64)
+		return 0;
 
-		    CAmount nSubsidy = 20 * COIN;
+	 CAmount nSubsidy = 20 * COIN;
 		    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
-		    for (i=0;i<halvings;i++) {
-		    	 nSubsidy =   nSubsidy * 0.6;
-		    }
+	 for (i=0;i<halvings;i++) {
+		 nSubsidy =   nSubsidy * 0.6;
+	 }
 
-		    return nSubsidy;
+     return nSubsidy;
 
 
 	}
@@ -3451,21 +3457,15 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
         return state.DoS(10, false, REJECT_INVALID, "bad-blk-sigops", false, "out-of-bounds SigOpCount");
 
     // Enforce rule that the coinbase starts with serialized block height
-    if (nHeight >= consensusParams.BIP34Height)
+ /*   if (nHeight >= consensusParams.BIP34Height)
     {
         CScript expect = CScript() << nHeight;
-        if (block.vtx[0]->vin[0].scriptSig.size() < expect.size()) {
-        	std::cout << " size ghalet " << block.vtx[0]->vin[0].scriptSig.size() <<  " < "  << expect.size();
-        }
-        if (!std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
-        	std::cout << " mahomch kif kif " ;
-        }
-    }
-   /*     if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
+
+        if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
             !std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");
         }
-    }*/
+    } */
 
     return true;
 }
