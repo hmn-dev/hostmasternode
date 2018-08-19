@@ -150,7 +150,7 @@ public:
 //    	    				}
 
     	    	        consensus.nSubsidyHalvingInterval = 1051200;
-    	    	        consensus.nMasternodePaymentsStartBlock = 240;//262800;
+    	    	        consensus.nMasternodePaymentsStartBlock = 100;//262800;
     	    	        consensus.nMasternodePaymentsIncreaseBlock = 350;
     	    	        consensus.nMasternodePaymentsIncreasePeriod = 10;
     	    	        consensus.nInstantSendConfirmationsRequired = 2;
@@ -158,7 +158,7 @@ public:
     	    	        consensus.nBudgetPaymentsStartBlock = 1000;
     	    	        consensus.nBudgetPaymentsCycleBlocks = 50;
     	    	        consensus.nBudgetPaymentsWindowBlocks = 10;
-    	    	        consensus.nSuperblockStartBlock = 11425;
+    	    	        consensus.nSuperblockStartBlock = 101;
     	    	        consensus.nSuperblockStartHash = uint256();
     	    	        consensus.nSuperblockCycle = 10;
     	    	        consensus.nGovernanceMinQuorum = 1;
