@@ -3285,7 +3285,6 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
 bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckMerkleRoot)
 {
     // These are checks that are independent of context.
-
     if (block.fChecked)
         return true;
 
@@ -3352,8 +3351,9 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
         LogPrintf("CheckBlock(HMN): spork is off, skipping transaction locking checks\n");
     }
 
+
     CBlockIndex *pindex = chainActive.Tip();
-    bool MasternodePayments = pindex->nHeight >202;
+    bool MasternodePayments =  (pindex != NULL) && (pindex->nHeight >202);
 
     if(MasternodePayments)
         {
