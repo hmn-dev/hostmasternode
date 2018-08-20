@@ -193,12 +193,12 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
 {
     // only create superblocks if spork is enabled AND if superblock is actually triggered
     // (height should be validated inside)
-    if(sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED) &&
-        CSuperblockManager::IsSuperblockTriggered(nBlockHeight)) {
-            LogPrint("gobject", "FillBlockPayments -- triggered superblock creation at height %d\n", nBlockHeight);
-            CSuperblockManager::CreateSuperblock(txNew, nBlockHeight, voutSuperblockRet);
-            return;
-    }
+//    if(sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED) &&
+//        CSuperblockManager::IsSuperblockTriggered(nBlockHeight)) {
+//            LogPrint("gobject", "FillBlockPayments -- triggered superblock creation at height %d\n", nBlockHeight);
+//            CSuperblockManager::CreateSuperblock(txNew, nBlockHeight, voutSuperblockRet);
+//            return;
+//    }
 
     // FILL BLOCK PAYEE WITH MASTERNODE PAYMENT OTHERWISE
     mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
@@ -475,7 +475,14 @@ bool CMasternodePaymentVote::Sign()
 bool CMasternodePayments::GetBlockPayee(int nBlockHeight, CScript& payeeRet) const
 {
     LOCK(cs_mapMasternodeBlocks);
+    std::map<COutPoint, CMasternode> mapMasternodes = mnodeman.GetFullMasternodeMap();
+     for (const auto& mnpair : mapMasternodes) {
+    	 CMasternode mn = mnpair.second;
+    	 if (mn.IsEnabled()) {
+    		 payeeRet= GetScriptForDestination(mn.pubKeyCollateralAddress.GetID());
+    	 }
 
+    }
     auto it = mapMasternodeBlocks.find(nBlockHeight);
     return it != mapMasternodeBlocks.end() && it->second.GetBestPayee(payeeRet);
 }

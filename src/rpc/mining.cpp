@@ -464,11 +464,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     }
 
     // when enforcement is on we need information about a masternode payee or otherwise our block is going to be orphaned by the network
-    CScript payee;
-    if (sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)
-        && !masternodeSync.IsWinnersListSynced()
-        && !mnpayments.GetBlockPayee(chainActive.Height() + 1, payee))
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Hostmasternode Core is downloading masternode winners...");
+
+
 
     // next bock is a superblock and we need governance info to correctly construct it
     if (sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)
@@ -648,6 +645,22 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.push_back(Pair("rules", aRules));
     result.push_back(Pair("vbavailable", vbavailable));
     result.push_back(Pair("vbrequired", int(0)));
+
+
+    CScript payee;
+
+        mnpayments.GetBlockPayee(chainActive.Height() + 1, payee);
+        if(payee != CScript()){
+               CTxDestination address1;
+               ExtractDestination(payee, address1);
+               CBitcoinAddress address2(address1);
+               result.push_back(Pair("payee", address2.ToString().c_str()));
+               result.push_back(Pair("payee_amount", "10" ));
+           } else {
+               result.push_back(Pair("payee", ""));
+               result.push_back(Pair("payee_amount", ""));
+           }
+
 
     if (nMaxVersionPreVB >= 2) {
         // If VB is supported by the client, nMaxVersionPreVB is -1, so we won't get here
