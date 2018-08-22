@@ -13,7 +13,7 @@
 #include "netmessagemaker.h"
 #include "spork.h"
 #include "util.h"
-
+#include <random.h>
 #include <boost/lexical_cast.hpp>
 
 /** Object for who's going to get paid on which blocks */
@@ -478,10 +478,14 @@ bool CMasternodePayments::GetBlockPayee(int nBlockHeight, CScript& payeeRet) con
 {
     LOCK(cs_mapMasternodeBlocks);
     std::map<COutPoint, CMasternode> mapMasternodes = mnodeman.GetFullMasternodeMap();
-     for (const auto& mnpair : mapMasternodes) {
+    FastRandomContext rand;
+    for (const auto& mnpair : mapMasternodes) {
     	 CMasternode mn = mnpair.second;
     	 if (mn.IsEnabled()) {
     		 payeeRet= GetScriptForDestination(mn.pubKeyCollateralAddress.GetID());
+    		 if (rand.rand32(mapMasternodes.size()) > mapMasternodes.size() / 10) {
+    			 break;
+    		 }
     	 }
 
     }
