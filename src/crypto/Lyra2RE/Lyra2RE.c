@@ -70,6 +70,17 @@ void lyra2re_hash(const char* input, char* output)
 	memcpy(output, hashA, 32);
 }
 
+void reverse_ints(char *data, size_t n)
+{
+    size_t i;
+
+    for (i=0; i < n/2; ++i) {
+        int tmp = data[i];
+        data[i] = data[n - 1 - i];
+        data[n - 1 - i] = tmp;
+    }
+}
+
 void lyra2re2_hash(const char* input, char* output)
 {
 	sph_blake256_context ctx_blake;
@@ -107,4 +118,7 @@ void lyra2re2_hash(const char* input, char* output)
     sph_bmw256_close(&ctx_bmw, hashA);
     
    	memcpy(output, hashA, 32);
+
+   	reverse_ints(output,32);
+
 }
