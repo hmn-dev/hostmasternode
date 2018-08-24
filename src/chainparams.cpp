@@ -125,29 +125,30 @@ public:
     CMainParams() {
     	strNetworkID = "main";
 
-//    	    	  		bool fNegative;
-//    	    	  		bool fOverflow;
-//    	    	  		uint32_t i=0;
+    	    	/*  		bool fNegative;
+    	    	  		bool fOverflow;
+    	    	  		uint32_t i=0; */
 
 
-    	    		genesis = CreateGenesisBlock(1533392425,496471, 0x1e0ffff0, 1, 20 * COIN);
+    	    		genesis = CreateGenesisBlock(1533392425,950163, 0x1e0ffff0, 1, 20 * COIN);
 
-//    	    			while (true) {
-//    	    					genesis = CreateGenesisBlock(1533392425,++i, 0x1e0ffff0, 1, 20 * COIN);
-//    	    				arith_uint256 bnTarget;
-//
-//    	    				bnTarget.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
-//    	    			if (UintToArith256(genesis.GetHash()) > bnTarget) {
-//    	    				//	std::cout << " nonce not correct  \n";
-//    	    					std::cout << i << " ";
-//    	    				}
-//    	    				else {
-//    	    					std::cout << " nonce found  " << i << "\n";
-//    	    					std::cout << " genesis found  " <<  genesis.GetHash().ToString() << "\n";
-//
-//    	    							exit(-1);
-//    	    				}
-//    	    				}
+    	/*    			while (true) {
+    	    					genesis = CreateGenesisBlock(1533392425,i, 0x1e0ffff0, 1, 20 * COIN);
+    	    				arith_uint256 bnTarget;
+
+    	    				bnTarget.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
+    	    			if (UintToArith256(genesis.GetHash()) > bnTarget) {
+    	    				//	std::cout << " nonce not correct  \n";
+    	    				//	std::cout << i << " ";
+    	    				i++;
+    	    				}
+    	    				else {
+    	    					std::cout << " nonce found  " << i << "\n";
+    	    					std::cout << " genesis found  " <<  genesis.GetHash().ToString() << "\n";
+
+    	    							exit(-1);
+    	    				}
+    	    				} */
 
     	    	        consensus.nSubsidyHalvingInterval = 1051200;
     	    	        consensus.nMasternodePaymentsStartBlock = 100;//262800;
@@ -208,7 +209,7 @@ public:
     	    	        consensus.hashGenesisBlock = genesis.GetHash();
     	    	        assert(
     	    	        				consensus.hashGenesisBlock
-    	    	        						== uint256S("00000c05d924400ffb8fb20fc717f5795ebfa647357c6a967b3f988717c033c3"));
+    	    	        						== uint256S("00000454b8f869e42b53232adcf287bed6e741ab325b9f3a7ab4c05aefb1b48d"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.info", "dnsseed.hmncoin.info"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.net", "dnsseed.hmncoin.net"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.org", "dnsseed.hmncoin.org"));
