@@ -686,6 +686,9 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                result.push_back(Pair("payee", address2.ToString().c_str()));
                result.push_back(Pair("payee_amount", "10" ));
            } else {
+        	   if (chainActive.Height() + 1>202) {
+                   throw JSONRPCError(RPC_INVALID_REQUEST, strprintf("No Masternode payment"));
+        	   }
                result.push_back(Pair("payee", ""));
                result.push_back(Pair("payee_amount", ""));
            }
