@@ -125,15 +125,15 @@ public:
     CMainParams() {
     	strNetworkID = "main";
 
-    	    	/*  		bool fNegative;
+    	    /*	  		bool fNegative;
     	    	  		bool fOverflow;
     	    	  		uint32_t i=0; */
 
 
-    	    		genesis = CreateGenesisBlock(1533392425,950163, 0x1e0ffff0, 1, 20 * COIN);
+    	    		genesis = CreateGenesisBlock(1533392426,3287516, 0x1e0ffff0, 1, 20 * COIN);
 
-    	/*    			while (true) {
-    	    					genesis = CreateGenesisBlock(1533392425,i, 0x1e0ffff0, 1, 20 * COIN);
+    	    /*			while (true) {
+    	    					genesis = CreateGenesisBlock(1533392426,i, 0x1e0ffff0, 1, 20 * COIN);
     	    				arith_uint256 bnTarget;
 
     	    				bnTarget.SetCompact(0x1e0ffff0, &fNegative, &fOverflow);
@@ -209,7 +209,7 @@ public:
     	    	        consensus.hashGenesisBlock = genesis.GetHash();
     	    	        assert(
     	    	        				consensus.hashGenesisBlock
-    	    	        						== uint256S("00000454b8f869e42b53232adcf287bed6e741ab325b9f3a7ab4c05aefb1b48d"));
+    	    	        						== uint256S("00000121a30a3946b96d3fd5f42889f479f72d741b4a396daa46a0b2a5053598"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.info", "dnsseed.hmncoin.info"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.net", "dnsseed.hmncoin.net"));
     	    	                vSeeds.push_back(CDNSSeedData("dnsseed.hmncoin.org", "dnsseed.hmncoin.org"));
