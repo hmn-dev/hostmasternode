@@ -479,13 +479,23 @@ bool CMasternodePayments::GetBlockPayee(int nBlockHeight, CScript& payeeRet) con
     LOCK(cs_mapMasternodeBlocks);
     std::map<COutPoint, CMasternode> mapMasternodes = mnodeman.GetFullMasternodeMap();
     FastRandomContext rand;
+    int i = 0;
+    for (const auto& mnpair : mapMasternodes) {
+        	 CMasternode mn = mnpair.second;
+        	 if (mn.IsEnabled()) {
+        		 i++;
+        	 }
+    }
+    int j = 0;
     for (const auto& mnpair : mapMasternodes) {
     	 CMasternode mn = mnpair.second;
     	 if (mn.IsEnabled()) {
-    		 payeeRet= GetScriptForDestination(mn.pubKeyCollateralAddress.GetID());
-    		 if (rand.rand32(mapMasternodes.size()) > mapMasternodes.size() / 10) {
+    		 if ((nBlockHeight % i ) == j) {
+    			 payeeRet= GetScriptForDestination(mn.pubKeyCollateralAddress.GetID());
     			 break;
     		 }
+    		 j++;
+
     	 }
 
     }
