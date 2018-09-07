@@ -624,7 +624,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                ExtractDestination(payee, address1);
                CBitcoinAddress address2(address1);
                result.push_back(Pair("payee", address2.ToString().c_str()));
-               result.push_back(Pair("payee_amount", "10" ));
+
+               result.push_back(Pair("payee_amount", GetMasternodePayment(chainActive.Height() + 1,GetBlockSubsidy(pblock->nBits,chainActive.Height() + 1,consensusParams , false))) );
            } else {
         	   if (chainActive.Height() + 1>202) {
                    throw JSONRPCError(RPC_INVALID_REQUEST, strprintf("No Masternode payment"));
