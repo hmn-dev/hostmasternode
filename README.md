@@ -16,7 +16,7 @@ are carried out collectively by the network. Hostmasternode Core is the name of 
 source software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the Hostmasternode Core software, see https://www.hostmasternode.com/get-hostmasternode/.
+the Hostmasternode Core software, see https://www.hostmasternode.com/.
 
 
 License
