@@ -3365,21 +3365,45 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
                     bool fIsInitialDownload = IsInitialBlockDownload();
 
                     // If we don't already have its previous block, skip masternode payment step
-                    if (!fIsInitialDownload && pindex != NULL)
+                    if  ( (!fIsInitialDownload && pindex != NULL)
+                    		&& (pindex->nHeight > 9000)
+							&& (block.nTime >= GetAdjustedTime() - 6 * 60 * 60) )
                     {
-                        bool foundPaymentAmount = false;
+                    	bool foundPaymentAmount = false;
+						bool foundPayee = false;
+						bool foundPaymentAndPayee = false;
 
-                        for (unsigned int i = 0; i < block.vtx[0]->vout.size(); i++) {
-                            if(block.vtx[0]->vout[i].nValue == masternodePaymentAmount )
-                                foundPaymentAmount = true;
+						CScript payee;
+						if( !mnpayments.GetBlockPayee(pindex->nHeight+1, payee)
+								 ||
+								 payee == CScript() ) {
+							foundPayee = true; //doesn't require a specific payee
+							foundPaymentAmount = true;
+							foundPaymentAndPayee = true;
+							LogPrintf("CheckBlock() : Using non-specific masternode payments %d\n", chainActive.Tip()->nHeight+1);
+						}
 
-                        }
+						for (unsigned int i = 0; i < block.vtx[0]->vout.size(); i++) {
+							if(block.vtx[0]->vout[i].nValue == masternodePaymentAmount )
+								foundPaymentAmount = true;
+							if(block.vtx[0]->vout[i].scriptPubKey == payee )
+								foundPayee = true;
+							if(block.vtx[0]->vout[i].nValue == masternodePaymentAmount && block.vtx[0]->vout[i].scriptPubKey == payee)
+								foundPaymentAndPayee = true;
+						}
 
-                        if(!foundPaymentAmount) {
-                             return state.DoS(100, error("CheckBlock() : Couldn't find masternode payment"));
-                        } else {
-                            LogPrintf("CheckBlock() : Found masternode payment %d\n", chainActive.Tip()->nHeight+1);
-                        }
+						if(!foundPaymentAndPayee) {
+							CTxDestination address1;
+							ExtractDestination(payee, address1);
+							LogPrintf("CheckBlock() : Couldn't find masternode payment(%d|%d) or payee(%d) nHeight %d. \n",
+									foundPaymentAmount,
+									masternodePaymentAmount,
+									foundPayee,
+									chainActive.Tip()->nHeight+1);
+							return state.DoS(100, error("CheckBlock() : Couldn't find masternode payment or payee"));
+						} else {
+							LogPrintf("CheckBlock() : Found masternode payment %d\n", chainActive.Tip()->nHeight+1);
+						}
                     } else {
                         LogPrintf("CheckBlock() : Is initial download, skipping masternode payment check %d\n", chainActive.Tip()->nHeight+1);
                     }
