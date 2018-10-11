@@ -3392,7 +3392,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 								foundPaymentAndPayee = true;
 						}
 
-						if(!foundPaymentAndPayee) {
+						if(!foundPaymentAmount) {
 							CTxDestination address1;
 							ExtractDestination(payee, address1);
 							LogPrintf("CheckBlock() : Couldn't find masternode payment(%d|%d) or payee(%d) nHeight %d. \n",
