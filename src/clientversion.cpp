@@ -67,7 +67,7 @@ const std::string CLIENT_NAME("Hostmasternode Core");
 #endif
 #endif
 
-const std::string CLIENT_BUILD("1.0.0");
+const std::string CLIENT_BUILD("1.0.0.2");
 
 std::string FormatVersion(int nVersion)
 {
