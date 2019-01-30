@@ -1026,6 +1026,8 @@ UniValue sendmany(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
     std::string strAccount = AccountFromValue(request.params[0]);
+
+    LogPrintf("Str Account = %s \n" , strAccount.c_str());
     UniValue sendTo = request.params[1].get_obj();
     int nMinDepth = 1;
     if (request.params.size() > 2)
